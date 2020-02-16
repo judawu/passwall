@@ -1366,7 +1366,7 @@ show_current_instance_info() {
 
 #	show_configs 还没有写呢
 
-	show_version_and_client_url
+	#show_version_and_client_url
 
 	install_jq
 	local client_config=""
@@ -1385,11 +1385,12 @@ show_current_instance_info() {
 
 	gen_client_configs() {
   
+    cat >&1 <<-EOF
 	#还没有写
-	
+	EOF
 	}
-
- #gen_client_configs 
+	
+    #gen_client_configs 
 
 	cat >&1 <<-EOF
 	可使用的客户端配置文件为:
@@ -1398,7 +1399,9 @@ show_current_instance_info() {
 
 	local mobile_config="key=${key}"
 	gen_mobile_configs() {
+	cat >&1 <<-EOF
 		#还没有写
+	EOF
 	}
 
 	#gen_mobile_configs
