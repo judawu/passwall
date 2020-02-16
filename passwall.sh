@@ -82,7 +82,7 @@ usage() {
 	Supervisor 命令:
 	    service supervisord {start|stop|restart|status}
 	                        {启动|关闭|重启|查看状态}
-	Kcptun 相关命令:
+	 相关命令:
 	    supervisorctl {start|stop|restart|status} passwall<id>
 	                  {启动|关闭|重启|查看状态}
 	EOF
