@@ -1,7 +1,7 @@
 #!/bin/sh
 
 : <<-'EOF'
-Copyright 2020 <JudaWu@gmail.com>
+Copyright 2020 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -22,37 +22,12 @@ CONFIG_VERSION=0
 INIT_VERSION=0
 # =================
 
-
-
 cat >&1 <<-'EOF'
 #########################################################
 # Passwall服务端一键检测脚本                             #
-# 该脚本支持 Passwall 服务端的安装、更新、卸载及配置       #
-# 脚本作者: Index <Juda@gmail.com>                      #
-# Github: https://github.com/judawu/passwall           #
 #########################################################
 EOF
-#打印帮助信息
-usage() {
-	cat >&1 <<-EOF
-	请使用: $0 <option>
-	可使用的参数 <option> 包括:
-	    install          安装
-	    uninstall        卸载
-	EOF
 
-	exit $1
-}
-
-# 判断命令是否存在
-command_exists() {
-	command -v "$@" >/dev/null 2>&1
-}
-
-# 判断输入内容是否为数字
-is_number() {
-	expr "$1" + 1 >/dev/null 2>&1
-}
 
 # 按任意键继续
 any_key_to_continue() {
@@ -67,11 +42,6 @@ any_key_to_continue() {
 	stty $saved
 }
 
-first_character() {
-	if [ -n "$1" ]; then
-		echo "$1" | cut -c1
-	fi
-}
 
 #检查是否具有 root 权限
 check_root() {
@@ -216,8 +186,8 @@ get_os_info() {
 		EOF
 		exit 1
 	fi
-	echo "$lsb_dist"vi
-	echo "$dist_version"
+	echo "$lsb_dist"，"$dist_version"
+	 
 }
 # 获取服务器架构和 passwall 服务端文件后缀名
 get_arch() {
@@ -241,28 +211,23 @@ get_arch() {
 	esac
 	echo "$architecture"
 }
-# 获取 API 内容
-get_content() {
-	local url="$1"
-	local retry=0
-	local content=""
-	get_network_content() {
-		if [ $retry -ge 3 ]; then
-			cat >&2 <<-EOF
-			获取网络信息失败!
-			URL: ${url}
-			安装脚本需要能访问到 github.com，请检查服务器网络。
-			注意: 一些国内服务器可能无法正常访问 github.com。
-			EOF
-			exit 1
-		fi
-		# 将所有的换行符替换为自定义标签，防止 jq 解析失败
-		content="$(wget -qO- --no-check-certificate "$url" | sed -r 's/(\\r)?\\n/#br#/g')"
-		if [ "$?" != "0" ] || [ -z "$content" ]; then
-			retry=$(expr $retry + 1)
-			get_network_content
-		fi
-	}
-	get_network_content
-	echo "$content"
-}
+
+cat >&1 <<-'EOF'
+你的系统硬件为:  
+EOF
+get_arch
+cat >&1 <<-'EOF'
+#你的IP地址为: 
+EOF
+get_server_ip
+cat >&1 <<-'EOF'
+#你的操作系统为
+EOF
+get_os_info
+cat >&1 <<-'EOF'
+# 你的root权限是 
+EOF
+check_root
+
+
+any_key_to_continue
