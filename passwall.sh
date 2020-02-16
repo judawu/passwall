@@ -1,8 +1,4 @@
 
-	if [ -n "$1" ]; then
-		echo "$1" | cut -c1
-	fi
-}
 #!/bin/sh
 
 : <<-'EOF'
