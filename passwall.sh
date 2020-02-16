@@ -71,13 +71,13 @@ usage() {
 	    update           检查更新
 	    manual           自定义 passwall 版本安装
 	    help             查看脚本使用说明
-	    add              添加一个实例, 多端口加速
+	    add              添加一个实例, 比如BBR++, v2ray，SSR,KCPTUN,UDPSPEED, UPD2RAW 等
 	    reconfig <id>    重新配置实例
 	    show <id>        显示实例详细配置
 	    log <id>         显示实例日志
 	    del <id>         删除一个实例
 	注: 上述参数中的 <id> 可选, 代表的是实例的ID
-	    可使用 1, 2, 3 ... 分别对应子实例 ，目前不可用
+	    可使用 1, 2, 3 ... 分别对应子实例 ，
 	    若不指定 <id>, 则默认为 1
 	Supervisor 命令:
 	    service supervisord {start|stop|restart|status}
@@ -330,6 +330,35 @@ get_arch() {
 			;;
 	esac
 	echo "$architecture"
+}
+# 获取 API 内容
+get_content() {
+	local url="$1"
+	local retry=0
+
+	local content=""
+	get_network_content() {
+		if [ $retry -ge 3 ]; then
+			cat >&2 <<-EOF
+			获取网络信息失败!
+			URL: ${url}
+			安装脚本需要能访问到 github.com，请检查服务器网络。
+			注意: 一些国内服务器可能无法正常访问 github.com。
+			EOF
+			exit 1
+		fi
+
+		# 将所有的换行符替换为自定义标签，防止 jq 解析失败
+		content="$(wget -qO- --no-check-certificate "$url" | sed -r 's/(\\r)?\\n/#br#/g')"
+
+		if [ "$?" != "0" ] || [ -z "$content" ]; then
+			retry=$(expr $retry + 1)
+			get_network_content
+		fi
+	}
+
+	get_network_content
+	echo "$content"
 }
 # 下载文件， 默认重试 3 次
 download_file() {
