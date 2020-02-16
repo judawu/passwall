@@ -1,119 +1,4 @@
-#!/bin/sh
 
-: <<-'EOF'
-Copyright 2020 <JudaWu@gmail.com>
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-	http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-EOF
-
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-# 版本信息，请勿修改
-# =================
-SHELL_VERSION=1
-CONFIG_VERSION=0
-INIT_VERSION=0
-# =================
-
-INSTALL_DIR='/usr/local/passwall'
-OG_DIR='/var/log/passwall'
-RELEASES_URL='https://api.github.com/judawu/passwall/releases'
-LATEST_RELEASE_URL="${RELEASES_URL}/latest"
-TAGS_URL='https://github.com/judawu/passwall/tags'
-
-BASE_URL='https://github.com/udawu/passwall/releases/base'
-SHELL_VERSION_INFO_URL="${BASE_URL}/version.json"
-
-JQ_DOWNLOAD_URL="https://github.com/stedolan/jq/releases/download/jq-1.5/"
-JQ_LINUX32_URL="${JQ_DOWNLOAD_URL}/jq-linux32"
-JQ_LINUX64_URL="${JQ_DOWNLOAD_URL}/jq-linux64"
-JQ_LINUX32_HASH='ab440affb9e3f546cf0d794c0058543eeac920b0cd5dff660a2948b970beb632'
-JQ_LINUX64_HASH='c6b3a7d7d3e7b70c6f51b706a3b90bd01833846c54d32ca32f0027f00226ff6d'
-JQ_BIN="${INSTALL_DIR}/bin/jq"
-
-SUPERVISOR_SERVICE_FILE_DEBIAN_URL="${BASE_URL}/startup/supervisord.init.debain"
-SUPERVISOR_SERVICE_FILE_REDHAT_URL="${BASE_URL}/startup/supervisord.init.redhat"
-SUPERVISOR_SYSTEMD_FILE_URL="${BASE_URL}/startup/supervisord.systemd"
-
-# 默认参数
-# =======================
-
-# ======================
-
-# 当前选择的实例 ID
-current_instance_id=""
-run_user='passwall'
-
-clear
-
-cat >&1 <<-'EOF'
-#########################################################
-# Passwall服务端一键安装脚本                             #
-# 该脚本支持 Passwall 服务端的安装、更新、卸载及配置       #                  #
-# Github: https://github.com/judawu/passwall           #
-#########################################################
-EOF
-
-# 打印帮助信息
-usage() {
-	cat >&1 <<-EOF
-	请使用: $0 <option>
-	可使用的参数 <option> 包括:
-	    install          安装
-	    uninstall        卸载
-	    update           检查更新
-	    manual           自定义 passwall 版本安装
-	    help             查看脚本使用说明
-	    add              添加一个实例, 比如BBR++, v2ray，SSR,KCPTUN,UDPSPEED, UPD2RAW 等
-	    reconfig <id>    重新配置实例
-	    show <id>        显示实例详细配置
-	    log <id>         显示实例日志
-	    del <id>         删除一个实例
-	注: 上述参数中的 <id> 可选, 代表的是实例的ID
-	    可使用 1, 2, 3 ... 分别对应子实例 ，
-	    若不指定 <id>, 则默认为 1
-	Supervisor 命令:
-	    service supervisord {start|stop|restart|status}
-	                        {启动|关闭|重启|查看状态}
-	 相关命令:
-	    supervisorctl {start|stop|restart|status} passwall<id>
-	                  {启动|关闭|重启|查看状态}
-	EOF
-
-	exit $1
-}
-
-# 判断命令是否存在
-command_exists() {
-	command -v "$@" >/dev/null 2>&1
-}
-
-# 判断输入内容是否为数字
-is_number() {
-	expr "$1" + 1 >/dev/null 2>&1
-}
-
-# 按任意键继续
-any_key_to_continue() {
-	echo "请按任意键继续或 Ctrl + C 退出"
-	local saved=""
-	saved="$(stty -g)"
-	stty -echo
-	stty cbreak
-	dd if=/dev/tty bs=1 count=1 2>/dev/null
-	stty -raw
-	stty echo
-	stty $saved
-}
-
-first_character() {
 	if [ -n "$1" ]; then
 		echo "$1" | cut -c1
 	fi
@@ -1506,6 +1391,7 @@ show_current_instance_info() {
 	gen_client_configs() {
   
 	#还没有写
+	
 	}
 
  #gen_client_configs 
@@ -2063,19 +1949,19 @@ is_installed() {
 	if [ -d '/usr/share/kcptun' ]; then
 		cat >&1 <<-EOF
 		检测发现你由旧版升级到了新版
-		新版中将默认安装目录设置为了 ${INSTALL_DIR}
-		脚本会自动将文件从旧版目录 /usr/share/passwall
-		移动到新版目录 ${INSTALL_DIR}
+		新版中将默认安装目录设置为了 ${KCPTUN_INSTALL_DIR}
+		脚本会自动将文件从旧版目录 /usr/share/kcptun
+		移动到新版目录 ${KCPTUN_INSTALL_DIR}
 		EOF
 		any_key_to_continue
 		(
 			set -x
-			cp -rf '/usr/share/passwall' "$KCPTUN_INSTALL_DIR" && \
-				rm -rf '/usr/share/passwall
+			cp -rf '/usr/share/kcptun' "$KCPTUN_INSTALL_DIR" && \
+				rm -rf '/usr/share/kcptun'
 		)
 	fi
 
-	if [ -d '/etc/supervisor/conf.d/' ] && [ -d "$INSTALL_DIR" ] && \
+	if [ -d '/etc/supervisor/conf.d/' ] && [ -d "$KCPTUN_INSTALL_DIR" ] && \
 		[ -n "$(get_installed_version)" ]; then
 		return 0
 	fi
