@@ -59,8 +59,6 @@ cat >&1 <<-'EOF'
 # 该脚本支持 Passwall 服务端的安装、更新、卸载及配置       #
 # 脚本作者: Index <Juda@gmail.com>                      #
 # Github: https://github.com/judawu/passwall           #
-# QQ交流群: 43391448, 68133628                          #
-#           633945405                                   #
 #########################################################
 EOF
 
