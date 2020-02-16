@@ -119,8 +119,52 @@ first_character() {
 		echo "$1" | cut -c1
 	fi
 }
+#!/bin/sh
 
-# 检查是否具有 root 权限
+: <<-'EOF'
+Copyright 2020 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+	http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+EOF
+
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# 版本信息，请勿修改
+# =================
+SHELL_VERSION=1
+CONFIG_VERSION=0
+INIT_VERSION=0
+# =================
+
+cat >&1 <<-'EOF'
+#########################################################
+# 系统检测脚本                             #
+#########################################################
+EOF
+
+
+# 按任意键继续
+any_key_to_continue() {
+	echo "请按任意键继续或 Ctrl + C 退出"
+	local saved=""
+	saved="$(stty -g)"
+	stty -echo
+	stty cbreak
+	dd if=/dev/tty bs=1 count=1 2>/dev/null
+	stty -raw
+	stty echo
+	stty $saved
+}
+
+
+#检查是否具有 root 权限
 check_root() {
 	local user=""
 	user="$(id -un 2>/dev/null || true)"
@@ -130,14 +174,16 @@ check_root() {
 		EOF
 		exit 1
 	fi
+	cat >&2 <<-'EOF'
+	    root 用户权限
+		EOF
 }
 
 # 获取服务器的IP地址
 get_server_ip() {
 	local server_ip=""
 	local interface_info=""
-
-	if command_exists ip; then
+    if command_exists ip; then
 		interface_info="$(ip addr)"
 	elif command_exists ifconfig; then
 		interface_info="$(ifconfig)"
@@ -174,7 +220,6 @@ get_os_info() {
 	if command_exists lsb_release; then
 		lsb_dist="$(lsb_release -si)"
 	fi
-
 	if [ -z "$lsb_dist" ] && [ -r /etc/lsb-release ]; then
 		lsb_dist="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
 	fi
@@ -262,8 +307,9 @@ get_os_info() {
 		EOF
 		exit 1
 	fi
+	echo "$lsb_dist"，"$dist_version"
+	 
 }
-
 # 获取服务器架构和 passwall 服务端文件后缀名
 get_arch() {
 	architecture="$(uname -m)"
@@ -284,38 +330,8 @@ get_arch() {
 			exit 1
 			;;
 	esac
+	echo "$architecture"
 }
-
-# 获取 API 内容
-get_content() {
-	local url="$1"
-	local retry=0
-
-	local content=""
-	get_network_content() {
-		if [ $retry -ge 3 ]; then
-			cat >&2 <<-EOF
-			获取网络信息失败!
-			URL: ${url}
-			安装脚本需要能访问到 github.com，请检查服务器网络。
-			注意: 一些国内服务器可能无法正常访问 github.com。
-			EOF
-			exit 1
-		fi
-
-		# 将所有的换行符替换为自定义标签，防止 jq 解析失败
-		content="$(wget -qO- --no-check-certificate "$url" | sed -r 's/(\\r)?\\n/#br#/g')"
-
-		if [ "$?" != "0" ] || [ -z "$content" ]; then
-			retry=$(expr $retry + 1)
-			get_network_content
-		fi
-	}
-
-	get_network_content
-	echo "$content"
-}
-
 # 下载文件， 默认重试 3 次
 download_file() {
 	local url="$1"
