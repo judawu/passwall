@@ -83,6 +83,9 @@ check_root() {
 		EOF
 		exit 1
 	fi
+	cat >&2 <<-'EOF'
+		root 用户权限
+		EOF
 }
 
 # 获取服务器的IP地址
@@ -215,6 +218,8 @@ get_os_info() {
 		EOF
 		exit 1
 	fi
+	echo "$lsb_dist'
+	echo "$dist_version"
 }
 
 # 获取服务器架构和 passwall 服务端文件后缀名
@@ -237,6 +242,7 @@ get_arch() {
 			exit 1
 			;;
 	esac
+	echo "$architecture"
 }
 
 # 获取 API 内容
