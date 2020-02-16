@@ -32,7 +32,7 @@ cat >&1 <<-'EOF'
 # Github: https://github.com/judawu/passwall           #
 #########################################################
 EOF
-# 打印帮助信息
+#打印帮助信息
 usage() {
 	cat >&1 <<-EOF
 	请使用: $0 <option>
@@ -73,7 +73,7 @@ first_character() {
 	fi
 }
 
-# 检查是否具有 root 权限
+#检查是否具有 root 权限
 check_root() {
 	local user=""
 	user="$(id -un 2>/dev/null || true)"
@@ -84,7 +84,7 @@ check_root() {
 		exit 1
 	fi
 	cat >&2 <<-'EOF'
-		root 用户权限
+	    root 用户权限
 		EOF
 }
 
@@ -92,8 +92,7 @@ check_root() {
 get_server_ip() {
 	local server_ip=""
 	local interface_info=""
-
-	if command_exists ip; then
+    if command_exists ip; then
 		interface_info="$(ip addr)"
 	elif command_exists ifconfig; then
 		interface_info="$(ifconfig)"
@@ -130,7 +129,6 @@ get_os_info() {
 	if command_exists lsb_release; then
 		lsb_dist="$(lsb_release -si)"
 	fi
-
 	if [ -z "$lsb_dist" ] && [ -r /etc/lsb-release ]; then
 		lsb_dist="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
 	fi
@@ -218,10 +216,9 @@ get_os_info() {
 		EOF
 		exit 1
 	fi
-	echo "$lsb_dist'
+	echo "$lsb_dist"vi
 	echo "$dist_version"
 }
-
 # 获取服务器架构和 passwall 服务端文件后缀名
 get_arch() {
 	architecture="$(uname -m)"
@@ -244,12 +241,10 @@ get_arch() {
 	esac
 	echo "$architecture"
 }
-
 # 获取 API 内容
 get_content() {
 	local url="$1"
 	local retry=0
-
 	local content=""
 	get_network_content() {
 		if [ $retry -ge 3 ]; then
@@ -261,18 +256,13 @@ get_content() {
 			EOF
 			exit 1
 		fi
-
 		# 将所有的换行符替换为自定义标签，防止 jq 解析失败
 		content="$(wget -qO- --no-check-certificate "$url" | sed -r 's/(\\r)?\\n/#br#/g')"
-
 		if [ "$?" != "0" ] || [ -z "$content" ]; then
 			retry=$(expr $retry + 1)
 			get_network_content
 		fi
 	}
-
 	get_network_content
 	echo "$content"
 }
-
-
