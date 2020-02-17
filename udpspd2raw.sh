@@ -391,7 +391,7 @@ help_udpspeeder() {
 	
 	
 	帮助不够看
-	哎呀，我也不懂啊，看上面的链接把
+	哎呀，我也不懂啊，看上面的链接吧
 		EOF
 any_key_to_continue
 }
@@ -593,7 +593,7 @@ stop_udp2raw() {
  udp2raw_pid=$(pgrep "udp2raw")
   [ $udp2raw_pid ] && kill -9 $udp2raw_pid
  
-  echo -e " \n$green你结束了udpspeeder进程！$none\n"
+  echo -e " \n$green你结束了udp2raw进程！$none\n"
    
   any_key_to_continue
 }
@@ -604,7 +604,7 @@ help_udp2raw() {
 	使用-a选项自动添加、或-g选项手动添加所需的iptables规则
 	
 	帮助不够看
-	哎呀，我也不懂啊，看上面的链接把
+	哎呀，我也不懂啊，看上面的链接
 	EOF
 any_key_to_continue
 }
