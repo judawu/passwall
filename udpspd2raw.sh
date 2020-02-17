@@ -121,7 +121,7 @@ install_udpspeeder() {
 	$cmd install wget -y
  	ver=$(curl -s https://api.github.com/repos/wangyu-/UDPspeeder/releases/latest | grep 'tag_name' | cut -d\" -f4)
    
-	UDPspeeder_download_link="https://github.com/wangyu-/UDPspeeder/releases/download/$ver/speederv2_binaries.tar.gz"
+	UDPspeeder_download_link="https://github.com/wangyu-/UDPspeeder/releases/$ver/speederv2_binaries.tar.gz"
 	
 	mkdir -p /tmp/UDPspeeder
 
@@ -373,7 +373,7 @@ help__udpspeeder() {
 install_upd2raw() {
 	$cmd install wget -y
 	ver=$(curl -s https://api.github.com/repos/wangyu-/udp2raw-tunnel/releases/latest | grep 'tag_name' | cut -d\" -f4)
-	upd2raw_download_link="https://github.com/wangyu-/udp2raw-tunnel/releases/download/$ver/udp2raw_binaries.tar.gz"
+	upd2raw_download_link="https://github.com/wangyu-/udp2raw-tunnel/releases/$ver/udp2raw_binaries.tar.gz"
 	mkdir -p /tmp/Udp2raw
 	if ! wget --no-check-certificate -O "/tmp/udp2raw_binaries.tar.gz" $udp2raw_download_link; then
 		echo -e "$red 下载 Udp2raw-tunnel 失败！$none" && exit 1
