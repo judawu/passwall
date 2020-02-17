@@ -1363,10 +1363,9 @@ show_current_instance_info() {
 			fi
 		done
 	}
+	show_configs 
 
-#	show_configs 还没有写呢
-
-	#show_version_and_client_url
+	show_version_and_client_url
 
 	install_jq
 	local client_config=""
@@ -1404,7 +1403,7 @@ show_current_instance_info() {
 	EOF
 	}
 
-	#gen_mobile_configs
+	gen_mobile_configs
 
 	cat >&1 <<-EOF
 	手机端参数可以使用:
