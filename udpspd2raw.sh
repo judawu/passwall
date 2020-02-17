@@ -355,7 +355,8 @@ start_udpspeeder() {
 
 stop_udpspeeder() {
 
-  pkill -f  ./speederv2
+ UDPspeeder_pid=$(pgrep "speederv2")
+ [ $UDPspeeder_pid ] && kill -9 $UDPspeeder_pid
    
   echo -e " \n$green你结束了udpspeeder进程！$none\n"
    
@@ -381,7 +382,7 @@ help_udpspeeder() {
 	帮助不够看
 	哎呀，我也不懂啊，看上面的链接把
 		EOF
-
+any_key_to_continue
 }
 
 
@@ -571,7 +572,8 @@ start_udp2raw() {
 
 stop_udp2raw() {
    
- pkill -f name ./udp2raw_amd64 
+ udp2raw_pid=$(pgrep "udp2raw")
+  [ $udp2raw_pid ] && kill -9 $udp2raw_pid
  
   echo -e " \n$green你结束了udpspeeder进程！$none\n"
    
@@ -586,7 +588,7 @@ help_udp2raw() {
 	帮助不够看
 	哎呀，我也不懂啊，看上面的链接把
 	EOF
-
+any_key_to_continue
 }
 
 
