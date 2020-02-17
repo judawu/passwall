@@ -370,12 +370,12 @@ help_udpspeeder() {
 
 
 
-install_upd2raw() {
+install_udp2raw() {
 	$cmd install wget -y
 	ver=$(curl -s https://api.github.com/repos/wangyu-/udp2raw-tunnel/releases/latest | grep 'tag_name' | cut -d\" -f4)
 	
-	upd2raw_download_link="https://github.com/wangyu-/udp2raw-tunnel/releases/download/"$ver"/udp2raw_binaries.tar.gz"
-	                   
+	udp2raw_download_link="https://github.com/wangyu-/udp2raw-tunnel/releases/download/"$ver"/udp2raw_binaries.tar.gz"
+	                             
 	mkdir -p /tmp/Udp2raw
 	if ! wget --no-check-certificate -O "/tmp/udp2raw_binaries.tar.gz" $udp2raw_download_link; then
 		echo -e "$red 下载 Udp2raw-tunnel 失败！$none" && exit 1
@@ -416,7 +416,7 @@ install_upd2raw() {
 		break
 	done
 }
-uninstall_upd2raw() {
+uninstall_udp2raw() {
 	if [[ -f /usr/bin/udp2raw ]]; then
 		udp2raw_pid=$(pgrep "udp2raw")
 		[ $udp2raw_pid ] && kill -9 $udp2raw_pid
@@ -594,11 +594,11 @@ while :; do
 		break
 		;;
 	3)
-		install_upd2raw
+		install_udp2raw
 		break
 		;;
 	4)
-		uninstall_upd2raw
+		uninstall_udp2raw
 		break
 		;;	
 	5)
@@ -614,7 +614,7 @@ while :; do
 		break
 		;;
 	8)
-		start_upd2raw
+		start_udp2raw
 		break
 		;;	
 	9)
@@ -622,7 +622,7 @@ while :; do
 		break
 		;;
 	10)
-		help_upd2raw
+		help_udp2raw
 		break
 		;;			
 	*)
