@@ -330,7 +330,7 @@ start_udpspeeder() {
 	# 判断服务端还是客户端，启动相应的代码
 	
 		echo -e " \n$green判断服务端还是客户端，启动进程...$none\n"
-		read -p "(默认是服务端: [y/n]): " input
+		read -p "(默认是服务端: [y/n]): " yn
 		if [ -n "$yn" ]; then
 				case "$(first_character "$yn")" in
 					y|Y)
@@ -557,7 +557,7 @@ start_udp2raw() {
 	# 判断服务端还是客户端，启动相应的代码
 	
 		echo -e " \n$green判断服务端还是客户端，启动进程...$none\n"
-		read -p "(默认是服务端: [y/n]): " input
+		read -p "(默认是服务端: [y/n]): " yn
 		if [ -n "$yn" ]; then
 				case "$(first_character "$yn")" in
 				y|Y)
