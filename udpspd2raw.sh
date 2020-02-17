@@ -119,7 +119,7 @@ any_key_to_continue() {
 
 install_udpspeeder() {
 	$cmd install wget -y
- 	ver=$(curl -s “https://api.github.com/repos/wangyu-/UDPspeeder/releases/latest grep ‘tag_name’| cut -d\" -f4)
+ 	ver=$(curl -s https://api.github.com/repos/wangyu-/UDPspeeder/releases/latest grep ‘tag_name’| cut -d\" -f4)
    
 	UDPspeeder_download_link="https://github.com/wangyu-/UDPspeeder/releases/download/$ver/speederv2_binaries.tar.gz"
 	
@@ -129,7 +129,7 @@ install_udpspeeder() {
 		echo -e "$red 下载 UDPspeeder 失败！$none" && exit 1
 	fi
 	tar zxf /tmp/UDPspeeder.tar.gz -C /tmp/UDPspeeder
-	cp -f /tmp/UDPspeeder/$ver/usr/bin/speederv2
+	cp -f /tmp/UDPspeeder/$speeder_ver /usr/bin/speederv2
 	chmod +x /usr/bin/speederv2
 	if [[ -f /usr/bin/speederv2 ]]; then
 		clear
@@ -372,7 +372,8 @@ help_udpspeeder() {
 
 install_upd2raw() {
 	$cmd install wget -y
-	ver=$(curl -s ”https://api.github.com/repos/wangyu-/udp2raw-tunnel/releases/latest | grep 'tag_name' | cut -d\" -f4)
+	ver=$(curl -s https://api.github.com/repos/wangyu-/udp2raw-tunnel/releases/latest | grep 'tag_name' | cut -d\" -f4)
+	
 	upd2raw_download_link="https://github.com/wangyu-/udp2raw-tunnel/releases/download/$ver/udp2raw_binaries.tar.gz"
 	                    
 	mkdir -p /tmp/Udp2raw
@@ -380,7 +381,7 @@ install_upd2raw() {
 		echo -e "$red 下载 Udp2raw-tunnel 失败！$none" && exit 1
 	fi
 	tar zxf /tmp/udp2raw_binaries.tar.gz -C /tmp/Udp2raw
-	cp -f /tmp/Udp2raw/$ver /usr/bin/udp2raw
+	cp -f /tmp/Udp2raw/$udp2raw_ver /usr/bin/udp2raw
 	chmod +x /usr/bin/udp2raw
 	if [[ -f /usr/bin/udp2raw ]]; then
 		clear
