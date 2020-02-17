@@ -234,7 +234,10 @@ start_udpspeeder() {
 				fi
 
 				target_port="$input"
-			else
+			
+
+			
+		     else
 				echo "输入有误, 请输入 1~65535 之间的数字!"
 				continue
 			fi
@@ -245,8 +248,10 @@ start_udpspeeder() {
 			if [ -n "$yn" ]; then
 				case "$(first_character "$yn")" in
 					y|Y)
+					    
 						;;
 					*)
+					    echo "端口已被占用, 请重新输入!" 
 						continue
 						;;
 				esac
@@ -261,7 +266,7 @@ start_udpspeeder() {
 
 
 	[ -z "$key" ] && key="$D_KEY"
-	echo "输入有误, 请输入通讯密码!"
+	echo "请输入通讯密码!"
 	read -p "(默认密码: ${key}): " input
 	[ -n "$input" ] && key="$input"
 
@@ -286,7 +291,7 @@ start_udpspeeder() {
 	input=""
 
     
-	[ -z "$fec_x" ] && mtu="$D_FEC_X"
+	[ -z "$fec_x" ] && fec_x="$D_FEC_X"
 	while true
 	do
 		echo "请输入FEC_X的值!"
@@ -303,7 +308,7 @@ start_udpspeeder() {
 	done
 	input=""
 
-    [ -z "$fec_y" ] && mtu="$D_FEC_Y"
+    [ -z "$fec_y" ] && fec_y="$D_FEC_Y"
 	while true
 	do
 		echo "请输入FEC_X的值!"
@@ -321,9 +326,9 @@ start_udpspeeder() {
 	input=""
 	
 	
-	# 判断书服务端还是客户端，启动相应的代码
+	# 判断服务端还是客户端，启动相应的代码
 	
-		echo -e " \n$green判断书服务端还是客户端，启动进程...$none\n"
+		echo -e " \n$green判断服务端还是客户端，启动进程...$none\n"
 		read -p "(默认是服务端: [y/n]): " input
 		if [ -n "$yn" ]; then
 				case "$(first_character "$yn")" in
@@ -412,7 +417,7 @@ install_udp2raw() {
 	rm -rf /tmp/udp2raw_binaries.tar.gz
 		while true
 	do
-		echo -e "\n$red是否开启UDPspeeder...$none\n"
+		echo -e "\n$red是否开启Udp2raw...$none\n"
 		
 		read -p "(请输入 [y/n]: " yn
 		if [ -n "$yn" ]; then
@@ -515,6 +520,7 @@ start_udp2raw() {
 					y|Y)
 						;;
 					*)
+					    echo "输入有误, 再来一次吧!"
 						continue
 						;;
 				esac
@@ -529,7 +535,7 @@ start_udp2raw() {
 
 
 	[ -z "$key" ] && key="$D_KEY"
-	echo "输入有误, 请输入通讯密码!"
+	echo " 输入通讯密码!"
 	read -p "(默认密码: ${key}): " input
 	[ -n "$input" ] && key="$input"
 
@@ -541,9 +547,9 @@ start_udp2raw() {
   
 	
 	
-	# 判断书服务端还是客户端，启动相应的代码
+	# 判断服务端还是客户端，启动相应的代码
 	
-		echo -e " \n$green判断书服务端还是客户端，启动进程...$none\n"
+		echo -e " \n$green判断服务端还是客户端，启动进程...$none\n"
 		read -p "(默认是服务端: [y/n]): " input
 		if [ -n "$yn" ]; then
 				case "$(first_character "$yn")" in
