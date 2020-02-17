@@ -158,6 +158,7 @@ install_udpspeeder() {
 					;;
 				*)
 					echo "\n$red输入有误，请重新输入!$none\n"
+					any_key_to_continue
 					continue
 					;;
 			esac
@@ -431,6 +432,7 @@ install_udp2raw() {
 					;;
 				*)
 					echo "\n$red输入有误，请重新输入!$none\n"
+					any_key_to_continue
 					continue
 					;;
 			esac
