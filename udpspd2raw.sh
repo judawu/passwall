@@ -164,6 +164,7 @@ install_udpspeeder() {
 		fi
 		break
 	done
+
 }
 
 uninstall_udpspeeder() {
@@ -175,6 +176,7 @@ uninstall_udpspeeder() {
 	else
 		echo -e " \n$red你没有安装 UDPspeeder ....不能卸载哦...$none\n" && exit 1
 	fi
+	
 }
 
 
@@ -321,7 +323,7 @@ start_udpspeeder() {
 	
 	# 判断书服务端还是客户端，启动相应的代码
 	
-		echo -e " \n$green请输入监听端口，监听端口是Server和Client通讯的端口...$none\n"
+		echo -e " \n$green判断书服务端还是客户端，启动进程...$none\n"
 		read -p "(默认是服务端: [y/n]): " input
 		if [ -n "$yn" ]; then
 				case "$(first_character "$yn")" in
@@ -329,21 +331,35 @@ start_udpspeeder() {
 						
                 # Run at server side:
                 ./speederv2 -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -f $fec_x:$fec_y -k $key
+				 UDPspeeder_pid=$(pgrep "speederv2")
+				 echo -e " \n$greenserver端启动了Udpspeed， 
+				 ./speederv2 -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -f $fec_x:$fec_y -k $key
+				 进程是$UDPspeeder_pid...$none\n"
+				
 				        ;;
 					*)
 				./speederv2 -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port -f $fec_x:$fec_y0 -k $key
+				
+				 UDPspeeder_pid=$(pgrep "speederv2")
+				 echo -e " \n$greenserver端启动了Udpspeed， 
+				 ./speederv2 -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port -f $fec_x:$fec_y0 -k $key
+				 进程是$UDPspeeder_pid...$none\n"
+				 
 						;;
 				esac
 		fi
 		
-
+    any_key_to_continue
 
 }
 
 stop_udpspeeder() {
 
-  pid = pidof ./speederv2
-  kill $pid
+  pkill -f  ./speederv2
+   
+  echo -e " \n$green你结束了udpspeeder进程！$none\n"
+   
+  any_key_to_continue
 }
 help_udpspeeder() {
 
@@ -425,6 +441,8 @@ uninstall_udp2raw() {
 	else
 		echo -e " \n$red...你没有有安装 Udp2raw-tunnel ....不能再卸载了...$none\n" && exit 1
 	fi
+	
+	 any_key_to_continue
 }
 
 start_udp2raw() {
@@ -524,7 +542,7 @@ start_udp2raw() {
 	
 	# 判断书服务端还是客户端，启动相应的代码
 	
-		echo -e " \n$green请输入监听端口，监听端口是Server和Client通讯的端口...$none\n"
+		echo -e " \n$green判断书服务端还是客户端，启动进程...$none\n"
 		read -p "(默认是服务端: [y/n]): " input
 		if [ -n "$yn" ]; then
 				case "$(first_character "$yn")" in
@@ -532,21 +550,32 @@ start_udp2raw() {
 						
                 # Run at server side:
                 ./udp2raw_amd64 -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -k $key --raw-mode faketcp -a
+				udp2raw_pid=$(pgrep "udp2raw")
+				 echo -e " \n$greenserver端启动了Udp2raw， 
+				   ./udp2raw_amd64 -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -k $key --raw-mode faketcp -a
+				 进程是$udp2raw_pid...$none\n"
 				        ;;
 					*)
 				./udp2raw_amd64 -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port  -k $key --raw-mode faketcp -a
+				 udp2raw_pid=$(pgrep "udp2raw")
+				 echo -e " \n$greenserver端启动了Udpspeed， 
+				 ./udp2raw_amd64 -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port  -k $key --raw-mode faketcp -a
+				 进程是$udp2raw_pid...$none\n"
 						;;
 				esac
 		fi
 		
-
+    any_key_to_continue
 
 }
 
 stop_udp2raw() {
-  pid = pidof ./udp2raw_amd64 
-  kill $pid
-
+   
+ pkill -f name ./udp2raw_amd64 
+ 
+  echo -e " \n$green你结束了udpspeeder进程！$none\n"
+   
+  any_key_to_continue
 }
 help_udp2raw() {
 
