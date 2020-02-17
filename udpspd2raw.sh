@@ -119,7 +119,7 @@ any_key_to_continue() {
 
 install_udpspeeder() {
 	$cmd install wget -y
- 	ver=$(curl -s https://api.github.com/repos/wangyu-/UDPspeeder/releases/latest grep 'tag_name' | cut -d\" -f4)
+ 	ver=$(curl -s “https://api.github.com/repos/wangyu-/UDPspeeder/releases/latest grep ‘tag_name’| cut -d\" -f4)
    
 	UDPspeeder_download_link="https://github.com/wangyu-/UDPspeeder/releases/download/$ver/speederv2_binaries.tar.gz"
 	
@@ -372,7 +372,7 @@ help_udpspeeder() {
 
 install_upd2raw() {
 	$cmd install wget -y
-	ver=$(curl -s https://api.github.com/repos/wangyu-/udp2raw-tunnel/releases/latest | grep 'tag_name' | cut -d\" -f4)
+	ver=$(curl -s ”https://api.github.com/repos/wangyu-/udp2raw-tunnel/releases/latest | grep 'tag_name' | cut -d\" -f4)
 	upd2raw_download_link="https://github.com/wangyu-/udp2raw-tunnel/releases/download/$ver/udp2raw_binaries.tar.gz"
 	                    
 	mkdir -p /tmp/Udp2raw
