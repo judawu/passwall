@@ -166,7 +166,7 @@ install_udpspeeder() {
 	done
 }
 
-uninstall__udpspeeder() {
+uninstall_udpspeeder() {
 	if [[ -f /usr/bin/speederv2 ]]; then
 		UDPspeeder_pid=$(pgrep "speederv2")
 		[ $UDPspeeder_pid ] && kill -9 $UDPspeeder_pid
@@ -342,8 +342,8 @@ start_udpspeeder() {
 
 stop_udpspeeder() {
 
-kill  ./speederv2 
-
+  pid = pidof ./speederv2
+  kill $pid
 }
 help_udpspeeder() {
 
@@ -544,8 +544,8 @@ start_udp2raw() {
 }
 
 stop_udp2raw() {
-
-kill  ./udp2raw_amd64 
+  pid = pidof ./udp2raw_amd64 
+  kill $pid
 
 }
 help_udp2raw() {
@@ -610,15 +610,15 @@ while :; do
 		break
 		;;
 	7)
-		help_udpspeeder
+		start_udp2raw
 		break
 		;;
 	8)
-		start_udp2raw
+		stop_udp2raw
 		break
 		;;	
 	9)
-		stop_udp2raw
+		help_udp2raw
 		break
 		;;
 	10)
