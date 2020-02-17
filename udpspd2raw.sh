@@ -375,7 +375,7 @@ install_upd2raw() {
 	ver=$(curl -s https://api.github.com/repos/wangyu-/udp2raw-tunnel/releases/latest | grep 'tag_name' | cut -d\" -f4)
 	
 	upd2raw_download_link="https://github.com/wangyu-/udp2raw-tunnel/releases/download/"$ver"/udp2raw_binaries.tar.gz"
-	                    
+	                   
 	mkdir -p /tmp/Udp2raw
 	if ! wget --no-check-certificate -O "/tmp/udp2raw_binaries.tar.gz" $udp2raw_download_link; then
 		echo -e "$red 下载 Udp2raw-tunnel 失败！$none" && exit 1
@@ -583,7 +583,7 @@ while :; do
 	echo " 10. 查看帮助udp2raw"
 	
 	echo
-	read -p "请选择[1-4]:" choose
+	read -p "请选择[1-10]:" choose
 	case $choose in
 	1)
 		install_udpspeeder
