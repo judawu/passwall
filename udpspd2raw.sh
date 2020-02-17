@@ -336,7 +336,7 @@ start_udpspeeder() {
 					y|Y)
 						
                      # Run at server side:
-                     speederv2 -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -f $fec_x:$fec_y -k $key --log-level 0
+                     speederv2 -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -f $fec_x:$fec_y -k $key 
 				      UDPspeeder_pid=$(pgrep "speederv2")
 				      echo -e " \n$greenserver端启动了Udpspeed， 
 				                speederv2 -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -f $fec_x:$fec_y -k $key --log-level 0
@@ -345,7 +345,7 @@ start_udpspeeder() {
 				     ;;
 					
 					n|N)
-				        speederv2 -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port -f $fec_x:$fec_y0 -k $key --log-level 0
+				        speederv2 -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port -f $fec_x:$fec_y0 -k $key 
 				
 				         UDPspeeder_pid=$(pgrep "speederv2")
 				         echo -e " \n$greenserver端启动了Udpspeed， 
@@ -568,7 +568,7 @@ start_udp2raw() {
 				              udp2raw -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -k $key --raw-mode faketcp -a --log-level 0
 				              进程是$udp2raw_pid...$none\n"
 							  
-                    udp2raw  -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -k $key --raw-mode faketcp -a --log-level 0
+                    udp2raw  -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -k $key --raw-mode faketcp -a 
 				     udp2raw_pid=$(pgrep "udp2raw")
 				
 				     
@@ -579,7 +579,7 @@ start_udp2raw() {
 				                 udp2raw  -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port  -k $key --raw-mode faketcp -a --log-level 0
 				                 进程是$udp2raw_pid...$none\n"
 								 
-				     udp2raw -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port  -k $key --raw-mode faketcp -a --log-level 0
+				     udp2raw -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port  -k $key --raw-mode faketcp -a 
 				      udp2raw_pid=$(pgrep "udp2raw")
 				     
 				;;
