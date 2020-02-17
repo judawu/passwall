@@ -177,7 +177,7 @@ uninstall_udpspeeder() {
 	else
 		echo -e " \n$red你没有安装 UDPspeeder ....不能卸载哦...$none\n" && exit 1
 	fi
-	
+	any_key_to_continue
 }
 
 
@@ -563,7 +563,7 @@ start_udp2raw() {
 				y|Y)
 						
                     # Run at server side:
-                    udp2raw  -s -l0.0.0.0:4096 -r 127.0.0.1:7777    -k "passwd" --raw-mode faketcp -a -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -k $key --raw-mode faketcp -a
+                    udp2raw  -s -l0.0.0.0:$listen_port -r $target_addr:$target_port  -k $key --raw-mode faketcp -a
 				     udp2raw_pid=$(pgrep "udp2raw")
 				
 				     echo -e " \n$greenserver端启动了Udp2raw， 
@@ -572,7 +572,7 @@ start_udp2raw() {
 				 ;;
 			     n|N)
 					
-				     udp2raw  -s -l0.0.0.0:4096 -r 127.0.0.1:7777    -k "passwd" --raw-mode faketcp -a -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port  -k $key --raw-mode faketcp -a
+				     udp2raw -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port  -k $key --raw-mode faketcp -a
 				      udp2raw_pid=$(pgrep "udp2raw")
 				       echo -e " \n$greenserver端启动了Udpspeed， 
 				                 udp2raw  -s -l0.0.0.0:4096 -r 127.0.0.1:7777    -k "passwd" --raw-mode faketcp -a -c -l0.0.0.0:$target_port  -r $target_addr:$listen_port  -k $key --raw-mode faketcp -a
