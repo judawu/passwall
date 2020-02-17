@@ -369,7 +369,7 @@ help__udpspeeder() {
 }
 
 
-}
+
 install_upd2raw() {
 	$cmd install wget -y
 	ver=$(curl -s https://api.github.com/repos/wangyu-/udp2raw-tunnel/releases/latest | grep 'tag_name' | cut -d\" -f4)
