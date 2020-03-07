@@ -1,0 +1,1512 @@
+﻿
+//v2ray 配置文件的参考来源 https://toutyrater.github.io/basic/log.html
+
+{
+  "inbounds": [
+    {
+      "port": 1080, // 监听端口
+      "protocol": "socks", // 入口协议为 SOCKS 5
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"  //socks的认证设置，noauth 代表不认证，由于 socks 通常在客户端使用，所以这里不认证
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess", // 出口协议，可以是vmess,socks，freedom,blackhole
+      "settings": {
+        "vnext": [
+          {
+            "address": "serveraddr.com", // 服务器地址，请修改为你自己的服务器 IP 或域名
+            "port": 16823,  // 服务器端口
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",  // 用户 ID，必须与服务器端配置相同
+                "alterId": 64 // 此处的值也应当与服务器相同
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+
+
+{
+  "inbounds": [
+    {
+      "port": 16823, // 服务器监听端口
+      "protocol": "vmess",    // 主传入协议
+	
+	  "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811",  // 用户 ID，客户端与服务器必须相同
+            "alterId": 64
+          }
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",  // 主传出协议
+      "settings": {}
+    }
+  ]
+}
+
+
+
+{
+  "inbounds": [
+    {
+      "port": 1080, // 监听端口
+      "protocol": "socks", // 入口协议为 SOCKS 5
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"  // 不认证
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "shadowsocks",
+      "settings": {
+        "servers": [
+          {
+            "address": "serveraddr.com", // Shadowsocks 的服务器地址
+            "method": "aes-128-gcm", // Shadowsocks 的加密方式
+            "ota": true, // 是否开启 OTA，true 为开启
+            "password": "sspasswd", // Shadowsocks 的密码
+            "port": 1024  
+          }
+        ]
+      }
+    }
+  ]
+}
+
+{
+  "inbounds": [
+    {
+      "port": 1024, // 监听端口
+      "protocol": "shadowsocks",
+      "settings": {
+        "method": "aes-128-gcm",
+        "ota": true, // 是否开启 OTA  
+		// 因为协议漏洞，Shadowsocks 已放弃 OTA(一次认证) 
+		// 转而使用 AEAD，V2Ray 的 Shadowsocks 协议已经跟进 AEAD，但是仍然兼容 OTA。
+		// 建议使用 AEAD (method 为 aes-256-gcm、aes-128-gcm、chacha20-poly1305 即可开启 AEAD), 使用 AEAD 时 OTA 会失效
+        "password": "sspasswd"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",  
+      "settings": {}
+    }
+  ]
+}
+
+
+{
+  "log": {
+    "loglevel": "warning", // 日志级别
+    "access": "D:\\v2ray\\access.log",  // 这是 Windows 系统的路径
+    "error": "D:\\v2ray\\error.log"
+  },
+  "inbounds": [
+    {
+      "port": 1080,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "serveraddr.com",
+            "port": 16823,  
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",  
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/v2ray/access.log", // 这是 Linux 的路径
+    "error": "/var/log/v2ray/error.log"
+  },
+  "inbounds": [
+    {
+      "port": 16823,
+      "protocol": "vmess",   
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811",  
+            "alterId": 64
+          }
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",  
+      "settings": {}
+    }
+  ]
+}
+
+
+
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "D:\\v2ray\\access.log",
+    "error": "D:\\v2ray\\error.log"
+  },
+  "inbounds": [
+    {
+      "port": 1080,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth",
+        "udp": true
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "serveraddr.com",
+            "port": 16823,  
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct" //如果要使用路由，这个 tag 是一定要有的，在这里 direct 就是 freedom 的一个标号，在路由中说 direct V2Ray 就知道是这里的 freedom 了
+    }    
+  ],
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "domain": ["geosite:cn"] // 中国大陆主流网站的域名
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "ip": [
+          "geoip:cn", // 中国大陆的 IP
+          "geoip:private" // 私有地址 IP，如路由器等
+        ]
+      }
+    ]
+  }
+}
+
+
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log"
+  },
+  "inbounds": [
+    {
+      "port": 16823,
+      "protocol": "vmess",    
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811"
+          }
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
+
+
+
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "D:\\v2ray\\access.log",
+    "error": "D:\\v2ray\\error.log"
+  },
+  "inbounds": [
+    {
+      "port": 1080,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "serveraddr.com",
+            "port": 16823,
+            "users": [
+              {
+                "id": "2b831381d-6324-4d53-ad4f-8cda48b30811",  
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"//如果要使用路由，这个 tag 是一定要有的，在这里 direct 就是 freedom 的一个标号，在路由中说 direct V2Ray 就知道是这里的 freedom 了
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "adblock"//同样的，这个 tag 也是要有的，在路由中说 adblock 就知道是这里的 blackhole（黑洞） 了
+    }
+  ],
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "domain": [
+          "tanx.com",
+          "googeadsserving.cn",
+          "baidu.com"
+        ],
+        "type": "field",
+        "outboundTag": "adblock"       
+      },
+      {
+        "domain": [
+          "amazon.com",
+          "microsoft.com",
+          "domain:jd.com", // V2Ray 中，星号 * 不具备通配符,要用domian：
+          "youku.com",
+          "baidu.com"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "domain": ["geosite:cn"]
+      },
+	    {
+        "type": "field",
+        "outboundTag": "direct",
+        "ip": [
+          "192.168.0.0/16"   //ip和Domain规则不能并行
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "ip": [
+          "geoip:cn",
+          "geoip:private"
+		  
+        ]
+      }
+    ]
+  }
+}
+
+
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log"
+  },
+  "inbounds": [
+    {
+      "port": 16823,
+      "protocol": "vmess",    
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+            "alterId": 64
+          }
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
+
+  
+	  //V2Ray 中传输层配置协议在 transport 里设定，也可以在 inbound/outbound 中的 streamSettings 设定。
+	  //这两者的区别是 inbound/outbound 的 streamSettings 只对当前的 inbound/outbound 有效(分连接配置)，
+	  //不影响其它的 inbound/outbound 的传输层配置，而 transport 是全局的，对整个配置所有的 inbound 和 outbound 都有效(全局配置)，
+	  //如果一个 inbound/outbound 中设定了 streamSettings，transport 的全局设定不会影响这个 inbound/outbound。
+      
+{
+  "log": {},
+  "inbounds": [],
+  "outbounds": [],
+  "routing": {},
+  "transport": {},
+  "dns": {},
+  "reverse": {},
+  "policy": {},
+  "stats": {},
+  "api": {}
+}
+
+
+//Mux 只需在客户端开启，服务器会自动识别，所以只给客户端的配置。
+//也就是只要在 outbound 或 outboundDetour 加入 "mux": {"enabled": true} 即可
+{
+  "inbounds": [
+    {
+      "port": 1080, // 监听端口
+      "protocol": "socks", // 入口协议为 SOCKS 5
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"  // 不认证
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess", // 出口协议
+      "settings": {
+        "vnext": [
+          {
+            "address": "serveraddr.com", // 服务器地址，请修改为你自己的服务器 ip 或域名
+            "port": 16823,  // 服务器端口
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",  // 用户 ID，必须与服务器端配置相同
+                "alterId": 64 // 此处的值也应当与服务器相同
+              }
+            ]
+          }
+        ]
+      },
+      "mux": {"enabled": true}
+    }
+  ]
+}
+
+
+
+
+//mKCP 的配置比较简单，只需在服务器的 inbounds 和 客户端的 outbounds 添加一个 streamSettings 并设置成 mkcp 即可
+{
+  "inbounds": [
+    {
+      "port": 16823,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+            "alterId": 64
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "mkcp", //此处的 mkcp 也可写成 kcp，两种写法是起同样的效果
+        "kcpSettings": {
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 100,
+          "congestion": true,
+          "header": {
+            "type": "none"
+          }
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
+
+
+{
+  "inbounds": [
+    {
+      "port": 1080,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+    },
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "serveraddr.com",
+            "port": 16823,
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "mkcp",
+        "kcpSettings": {
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 100, 
+		  //客户端的上行对于服务器来说是下行，同样地客户端的下行是服务器的上行
+		  //建议将服务器和客户端的 downlinkCapacity 设成一个很大的值，然后分别修改两端的 uplinkCapacity 以调整上下行速率
+          "congestion": true,
+          "header": {
+            "type": "none"  //type 可以设置成 utp、srtp、wechat-video、dtls、wireguard 或者 none 进行伪装
+          }
+        }
+      }
+    }
+  ]
+}
+
+{
+  "inbounds":[
+  { //主端口配置
+      "port": 37192,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "d17a1af7-efa5-42ca-b7e9-6a35282d737f",
+            "alterId": 64
+          }
+        ],
+        "detour": { //绕行配置，即指示客户端使用 dynamicPort 的配置通信
+          "to": "dynamicPort"   
+        }
+      }
+    },
+    {
+      "protocol": "vmess",
+      "port": "10000-20000", // 端口范围
+      "tag": "dynamicPort",  // 与上面的 detour to 相同
+      "settings": {
+        "default": {
+          "alterId": 64
+        }
+      },
+      "allocate": {            // 分配模式
+        "strategy": "random",  // 随机开启
+        "concurrency": 2,      // 同时开放两个端口,这个值最大不能超过端口范围的 1/3
+        "refresh": 3           // 每三分钟刷新一次
+      }
+    }
+  ]
+}
+
+
+{
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "1.2.3.4",
+            "port": 37192,
+            "users": [
+              {
+                "id": "d17a1af7-efa5-42ca-b7e9-6a35282d737f",
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+
+//代理转发
+{
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": { // settings 的根据实际情况修改
+        "vnext": [
+          {
+            "address": "1.1.1.1",
+            "port": 8888,
+            "users": [
+              {
+                "alterId": 64,
+                "id": "b12614c5-5ca4-4eba-a215-c61d642116ce"
+              }
+            ]
+          }
+        ]
+      },
+      "proxySettings": {
+          "tag": "transit"  // 这里的 tag 必须跟作为代理 VPS 的 tag 一致，这里设定的是 "transit"
+        }
+    },
+    {
+      "protocol": "shadowsocks",
+      "settings": {
+        "servers": [
+          {
+            "address": "2.2.2.2",
+            "method": "aes-256-cfb",
+            "ota": false,
+            "password": "password",
+            "port": 1024
+          }
+        ]
+      },
+      "tag": "transit"
+    }
+  ]
+}
+
+
+{
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": { // settings 的根据实际情况修改
+        "vnext": [
+          {
+            "address": "1.1.1.1",
+            "port": 8888,
+            "users": [
+              {
+                "alterId": 64,
+                "id": "b12614c5-5ca4-4eba-a215-c61d642116ce"
+              }
+            ]
+          }
+        ]
+      },
+      "tag": "DOUS",
+      "proxySettings": {
+          "tag": "DOSG"  
+        }
+    },
+    {
+      "protocol": "shadowsocks",
+      "settings": {
+        "servers": [
+          {
+            "address": "2.2.2.2",
+            "method": "aes-256-cfb",
+            "ota": false,
+            "password": "password",
+            "port": 1024
+          }
+        ]
+      },
+      "tag": "AliHK"
+    },
+    {
+      "protocol": "shadowsocks",
+      "settings": {
+        "servers": [
+          {
+            "address": "3.3.3.3",
+            "method": "aes-256-cfb",
+            "ota": false,
+            "password": "password",
+            "port": 3442
+          }
+        ]
+      },
+      "tag": "AliSG",
+      "proxySettings": {
+          "tag": "AliHK"  
+      }
+    },
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "4.4.4.4",
+            "port": 8462,
+            "users": [
+              {
+                "alterId": 64,
+                "id": "b27c24ab-2b5a-433e-902c-33f1168a7902"
+              }
+            ]
+          }
+        ]
+      },
+      "tag": "DOSG",
+      "proxySettings": {
+          "tag": "AliSG"  
+      }
+    },
+  ]
+}
+
+
+
+//国内转发
+
+{
+  "log" : {                                 
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 1234,
+      "protocol": "vmess",    // 入站协议为 VMess
+      "settings": {
+        "clients": [
+          {
+            "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", // UUID
+            "level": 1,       // 用户等级
+            "alterId": 32     // 额外ID
+          },
+          // 在这里添加更多用户，注意UUID不能重复
+          {
+            "id": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy", // UUID
+            "level": 0,       // 用户等级
+            "alterId": 32     // 额外ID
+          }
+        ]
+      }
+    }
+  ],
+  // ========== BEGIN STEP 1 ==========
+  // 国内中转服务器当作国外服务器的“客户端”
+  // 国际流量发往国外服务器上
+  "outbounds": [
+    {
+      "protocol": "vmess",        // 出口协议
+      "settings": {
+        "vnext": [
+          {
+            "address": "1.2.3.4", // 国外服务器地址
+            "port": 23456,        // 国外服务器端口
+            "users": [
+                {"id": "zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz"} // 用户 ID，须与国外服务器端配置相同
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "block"
+    },
+    // 增加 freedom 传出绕路，国内流量直接放行
+    {
+      "protocol": "freedom",
+      "tag": "direct",
+      "settings": {}
+    }
+  ],
+  // ========== END STEP 1 ==========
+  "routing": { // 路由设置
+   "domainStrategy": "IPOnDemand",
+    "strategy": "rules",
+    "rules": [
+      {
+        "type": "field",      // 不允许客户端访问服务端的局域网地址，以提升安全性
+        "ip": [
+          "geoip:cn"
+        ],
+        "outboundTag": "block"
+      },
+      // 配置国内网站和IP直连规则
+      {
+        "type": "field",  // 对于一些常见的国内网站，也使用直连模式
+        "domain": [
+          "geosite:cn"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field", // 对于所有国内的 IP，都采用直连模式
+        "ip": [
+          "geoip:cn"
+        ]
+        "outboundTag": "direct"
+      }
+    ]
+  }
+}
+
+//http伪装
+
+
+{
+  "log" : {
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 80, //推荐80端口，更好地迷惑防火墙（好吧实际上并没有什么卵用
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+            "level": 1,
+            "alterId": 64
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {
+          "header": { // header 这一项是关于数据包伪装的设置，可自定义合理的内容，但要确保服务器与客户端一致
+            "type": "http",
+            "response": {
+              "version": "1.1",
+              "status": "200",
+              "reason": "OK",
+              "headers": {
+                "Content-Type": ["application/octet-stream", "application/x-msdownload", "text/html", "application/x-shockwave-flash"],
+                "Transfer-Encoding": ["chunked"],
+                "Connection": ["keep-alive"],
+                "Pragma": "no-cache"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "blocked"
+    }
+  ],
+  "routing": {
+    "strategy": "rules",
+    "settings": {
+      "rules": [
+        {
+          "type": "field",
+          "ip": [
+            "geoip:private"
+          ],
+          "outboundTag": "blocked"
+        }
+      ]
+    }
+  }
+}
+
+
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 1080,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbound": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "serveraddr.com",
+            "port": 80,
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {
+          "header": {  //这里的 header 要与服务器保持一致
+            "type": "http",
+            "request": {
+              "version": "1.1",
+              "method": "GET",
+              "path": ["/"],
+              "headers": {
+                "Host": ["www.cloudflare.com", "www.amazon.com"],
+                "User-Agent": [
+                  "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.75 Safari/537.36",
+                          "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_2 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/53.0.2785.109 Mobile/14A456 Safari/601.1.46"
+                ],
+                "Accept-Encoding": ["gzip, deflate"],
+                "Connection": ["keep-alive"],
+                "Pragma": "no-cache"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"
+    }
+  ],
+  "routing": {
+    "strategy": "rules",
+    "settings": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "ip": [
+            "geoip:private"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "chinasites",
+          "outboundTag": "direct"
+        },
+        {
+          "type": "chinaip",
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  }
+}
+
+
+//配置证书
+{
+  "inbounds": [
+    {
+      "port": 443, // 建议使用 443 端口
+      "protocol": "vmess",    
+      "settings": {
+        "clients": [
+          {
+            "id": "23ad6b10-8d1a-40f7-8ad0-e3e35cd38297",  
+            "alterId": 64
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls", // security 要设置为 tls 才会启用 TLS
+        "tlsSettings": {
+          "certificates": [
+            {
+              "certificateFile": "/etc/v2ray/v2ray.crt", // 证书文件
+              "keyFile": "/etc/v2ray/v2ray.key" // 密钥文件
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
+
+{
+  "inbounds": [
+    {
+      "port": 1080,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "mydomain.me", // tls 需要域名，所以这里应该填自己的域名
+            "port": 443,
+            "users": [
+              {
+                "id": "23ad6b10-8d1a-40f7-8ad0-e3e35cd38297",
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls" // 客户端的 security 也要设置为 tls
+      }
+    }
+  ]
+}
+
+
+//webscoket
+{
+  "inbounds": [
+    {
+      "port": 16823,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+            "alterId": 64
+          }
+        ]
+      },
+      "streamSettings": {
+        "network":"ws"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
+
+
+{
+  "inbounds": [
+    {
+      "port": 1080,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "serveraddr.com",
+            "port": 16823,
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings":{
+        "network":"ws"
+      }
+    }
+  ]
+}
+
+//WebSocket+TLS+Web
+//次 TLS 的配置将写入 Nginx / Caddy / Apache 配置中，由这些软件来监听 443 端口（443 比较常用，并非 443 不可），
+//然后将流量转发到 V2Ray 的 WebSocket 所监听的内网端口（本例是 10000），V2Ray 服务器端不需要配置 TLS
+{
+  "inbounds": [
+    {
+      "port": 10000,
+      "listen":"127.0.0.1",//只监听 127.0.0.1，避免除本机外的机器探测到开放了 10000 端口
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+            "alterId": 64
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+        "path": "/ray"
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
+
+//Nginx 配置
+server {
+  listen  443 ssl;
+  ssl on;
+  ssl_certificate       /etc/v2ray/v2ray.crt;
+  ssl_certificate_key   /etc/v2ray/v2ray.key;
+  ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers           HIGH:!aNULL:!MD5;
+  server_name           mydomain.me;
+        location /ray { # 与 V2Ray 配置中的 path 保持一致
+        proxy_redirect off;
+        proxy_pass http://127.0.0.1:10000;#假设WebSocket监听在环回地址的10000端口上
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $http_host;
+
+        # Show realip in v2ray access.log
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+}
+
+//Caddy 配置
+mydomain.me
+{
+  log ./caddy.log
+  proxy /ray localhost:10000 {
+    websocket
+    header_upstream -Origin
+  }
+}
+//Apache 配置
+<VirtualHost *:443>
+  ServerName mydomain.me
+  SSLCertificateFile /etc/v2ray/v2ray.crt
+  SSLCertificateKeyFile /etc/v2ray/v2ray.key
+
+  SSLProtocol -All +TLSv1 +TLSv1.1 +TLSv1.2
+  SSLCipherSuite HIGH:!aNULL
+
+  <Location "/ray/">
+    ProxyPass ws://127.0.0.1:10000/ray/ upgrade=WebSocket
+    ProxyAddHeaders Off
+    ProxyPreserveHost On
+    RequestHeader append X-Forwarded-For %{REMOTE_ADDR}s
+  </Location>
+</VirtualHost>
+
+
+{
+  "inbounds": [
+    {
+      "port": 1080,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth",
+        "udp": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "mydomain.me",
+            "port": 443,
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "wsSettings": {
+          "path": "/ray"
+        }
+      }
+    }
+  ]
+}
+
+
+//使用 HTTP/2 要开启 TLS
+{
+  "inbounds": [
+    {
+      "port": 443,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+            "alterId": 64
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "h2", // h2 也可写成 http，效果一样
+        "httpSettings": { //此项是关于 HTTP/2 的设置
+          "path": "/ray"
+        },
+        "security": "tls", // 配置tls
+        "tlsSettings": {
+          "certificates": [
+            {
+              "certificateFile": "/etc/v2ray/v2ray.crt", // 证书文件，详见 tls 小节
+              "keyFile": "/etc/v2ray/v2ray.key" // 密钥文件
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
+
+{
+  "inbounds": [
+    {
+      "port": 1080,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth",
+        "udp": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "mydomain.me",
+            "port": 443,
+            "users": [
+              {
+                "id": "b831381d-6324-4d53-ad4f-8cda48b30811",
+                "alterId": 64
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "h2",
+        "httpSettings": { //此项是关于 HTTP/2 的设置
+          "path": "/ray"
+        },
+        "security": "tls"
+      }
+    }
+  ]
+}
+
+
+//为 V2Ray 配置透明代理的入站和 DNS 分流
+
+{
+  "inbounds": [
+    {
+      "tag":"transparent",
+      "port": 12345,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "network": "tcp,udp",
+        "followRedirect": true
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tproxy": "tproxy" // 透明代理使用 TPROXY 方式
+        }
+      }
+    },
+    {
+      "port": 1080, 
+      "protocol": "socks", // 入口协议为 SOCKS 5
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vmess", // 代理服务器
+      "settings": {
+        "vnext": [
+          ...
+        ]
+      },
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      },
+      "mux": {
+        "enabled": true
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      }      
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      }
+    },
+    {
+      "tag": "dns-out",
+      "protocol": "dns",
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      }  
+    }
+  ],
+  "dns": {
+    "servers": [
+      "8.8.8.8", // 非中中国大陆域名使用 Google 的 DNS
+      "1.1.1.1", // 非中中国大陆域名使用 Cloudflare 的 DNS(备用)
+      "114.114.114.114", // 114 的 DNS (备用)
+      {
+        "address": "223.5.5.5", //中国大陆域名使用阿里的 DNS
+        "port": 53,
+        "domains": [
+          "geosite:cn",
+          "ntp.org",   // NTP 服务器
+          "$myserver.address" // 此处改为你 VPS 的域名
+        ]
+      }
+    ]
+  },
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      { // 劫持 53 端口 UDP 流量，使用 V2Ray 的 DNS
+        "type": "field",
+        "inboundTag": [
+          "transparent"
+        ],
+        "port": 53,
+        "network": "udp",
+        "outboundTag": "dns-out" 
+      },    
+      { // 直连 123 端口 UDP 流量（NTP 协议）
+        "type": "field",
+        "inboundTag": [
+          "transparent"
+        ],
+        "port": 123,
+        "network": "udp",
+        "outboundTag": "direct" 
+      },    
+      {
+        "type": "field", 
+        "ip": [ 
+          // 设置 DNS 配置中的国内 DNS 服务器地址直连，以达到 DNS 分流目的
+          "223.5.5.5",
+          "114.114.114.114"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "ip": [ 
+          // 设置 DNS 配置中的国内 DNS 服务器地址走代理，以达到 DNS 分流目的
+          "8.8.8.8",
+          "1.1.1.1"
+        ],
+        "outboundTag": "proxy" // 改为你自己代理的出站 tag
+      },
+      { // 广告拦截
+        "type": "field", 
+        "domain": [
+          "geosite:category-ads-all"
+        ],
+        "outboundTag": "block"
+      },
+      { // BT 流量直连
+        "type": "field",
+        "protocol":["bittorrent"], 
+        "outboundTag": "direct"
+      },
+      { // 直连中国大陆主流网站 ip 和 保留 ip
+        "type": "field", 
+        "ip": [
+          "geoip:private",
+          "geoip:cn"
+        ],
+        "outboundTag": "direct"
+      },
+      { // 直连中国大陆主流网站域名
+        "type": "field", 
+        "domain": [
+          "geosite:cn"
+        ],
+        "outboundTag": "direct"
+      }
+    ]
+  }
+}
