@@ -20,11 +20,11 @@
       "settings": {
         "vnext": [
           {
-            "address": "v3.juda.monster",
+            "address": "@@@@-server-@@@@",
             "port": 443,
             "users": [
               {
-                "id": "ef0eba81-5573-49a1-a7aa-5e83c4887727",
+                "id": "@@@@-uuid-@@@@",
                 "alterId": 133
               }
             ]

@@ -250,10 +250,11 @@ get_os_info
 get_arch
 }
  v2ray_go(){
-
+ if  ![[ -f /etc/v2ray ]]; then
  date -R
  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
  bash <(curl -L -s https://install.direct/go.sh)
+fi 
 
 while true
 	do	echo -e "\n$green v2ray已经安装和配置，是否用网站的json文件来替换默认json？...$none\n"
@@ -265,6 +266,10 @@ while true
                   if ! wget --no-check-certificate --no-cache -O "/etc/v2ray/config.json" https://raw.githubusercontent.com/judawu/passwall/master/v2ray_server.json; then
                      mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
 		             echo -e "$red 下载config.json 失败$none" 
+				   else
+				      echo -e "\n$green 系统自动产生uuid并写入json...$none\n"		 
+                      v2ray_uuid = $(cat /proc/sys/kernel/random/uuid)
+					  sed -in-place -e 's/@@@@-uuid-@@@@/$v2ray_uuid/g' /etc/v2ray/config.json
 	              fi
 				    ;;
 				c|C)
@@ -272,7 +277,19 @@ while true
                   if ! wget --no-check-certificate --no-cache -O "/etc/v2ray/config.json" https://raw.githubusercontent.com/judawu/passwall/master/v2ray_client.json; then
                      mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
 		             echo -e "$red 下载config.json 失败$none" 
-	              fi
+				   else
+				      
+				      echo -e "\n$green 请输入你的Domian名和uuid...$none\n"		 
+		              read -p "(请输入Domian): " server_domain
+					  if [ -n "$server_domain" ]; then
+					  sed -in-place -e 's/@@@@-server-@@@@/$v2ray_uuid/g' /etc/v2ray/config.json
+	                  fi
+					  read -p "(请输入UUID): "   v2ray_uuid
+		              if [ -n "$v2ray_uuid" ]; then
+					  sed -in-place -e 's/@@@@-uuid-@@@@/$v2ray_uuid/g' /etc/v2ray/config.json
+	                  fi
+  
+				 fi
 				    ;;		
 				*)					
 					break
@@ -281,6 +298,8 @@ while true
 		fi
 	break
 done
+
+
 
 while true
 	do  echo -e "\n$green 是否安装证书ACME...$none\n"		  
@@ -313,6 +332,7 @@ while true
 		fi
 	break
 done
+
 
 while true
 	do  echo -e "\n$green 配置结束了，重启V2ray吧, 可以用service v2ray restart 来启动服务，配置文件在/etc/v2ray/config.json...$none\n"		 
