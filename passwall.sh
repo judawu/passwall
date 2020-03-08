@@ -169,7 +169,7 @@ get_arch() {
 			exit 1
 			;;
 	esac
-	echo "$architecture"
+	#echo "$architecture"
 }
 
 # 获取服务器的IP地址
@@ -192,7 +192,7 @@ get_server_ip() {
 		 server_ip="$(wget -qO- --no-check-certificate https://ipv4.icanhazip.com)"
 	fi
 
-	echo "$server_ip"
+	#echo "$server_ip"
 }
 	is_port() {
 		local port="$1"
@@ -458,9 +458,16 @@ appache_go() {
 
 }
 website_go() {
-      echo -e "\n$green 不好意思，website我还没有写部署步骤...$none\n"
-	  #sudo apt-get install dnsutils -y
-       #dig www.google.com @127.0.0.1 -p 53
+      echo -e "\n$green 不好意思，website我还没有写部署步骤，将部署测试工具...$none\n"
+	   if [[ -f /usr/bin/yum ]]; then
+		sudo yum -y install dnsutils -y
+		
+  fi
+  if [[ -f /usr/bin/apt-get ]]; then
+		sudo apt-get -y install dnsutils -y
+  fi
+	  
+      dig www.google.com @127.0.0.1 -p 53
 }
 bbr_go() {
 
@@ -484,7 +491,7 @@ kcprun_go() {
 
 
 check_sys
-
+echo -e "\n$green 你的系统架构是$architecture，软件系统是$lsb_dist，$dist_version， 当前服务器IP是$server_ip，系统检测结束...$none\n"
 	
 
 while :; do
@@ -502,6 +509,7 @@ while :; do
 	echo " 9. 安装和部署伪装网站,探测工具等"
 	echo " 10. 安装和部署udpspeed，upd2raw"
 	echo " 11. 安装和部署kcprun"
+	
 	
 	echo
 	read -p "请选择[1-10]:" choose
