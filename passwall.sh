@@ -516,7 +516,7 @@ fi
 }
 udpspd2raw_go() {
 
-wget --no-check-certificate --no-cache -O "/etc/v2ray/config.json" https://raw.githubusercontent.com/judawu/passwall/master/udpspd2raw.sh && chmod +x ./udpspd2raw.sh  && ./udpspd2raw.sh
+wget https://raw.githubusercontent.com/judawu/passwall/master/udpspd2raw.sh && chmod +x ./udpspd2raw.sh && bash ./udpspd2raw.sh
 }
 
 kcprun_go() {
@@ -534,7 +534,7 @@ get_server_ip
 
 while :; do
 	echo
-	echo -e "\n$green........... V2ray/SSR/Trojan快速部署........"
+	echo -e "\n$green........... V2ray/SSR/Trojan快速部署........$none\n"
 	echo
 	echo " 1. 安装和部署V2ray"
 	echo " 2. 安装和部署SSR"
