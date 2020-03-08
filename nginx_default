@@ -1,8 +1,8 @@
 server {
   listen 443 ssl;
   listen [::]:443 ssl;
-  root /var/www/html
-  index index.html 
+  root /var/www/html;
+  index index.html;
   
   ssl_certificate       /etc/v2ray/v2ray.crt;
   ssl_certificate_key   /etc/v2ray/v2ray.key;
