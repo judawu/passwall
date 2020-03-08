@@ -268,8 +268,8 @@ while true
 		             echo -e "$red 下载config.json 失败$none" 
 				   else
 				      echo -e "\n$green 系统自动产生uuid并写入json...$none\n"		 
-                      v2ray_uuid=$(cat /proc/sys/kernel/random/uuid)
-					  sed -in-place -e 's/@@@@-uuid-@@@@/$v2ray_uuid/g' /etc/v2ray/config.json
+                      
+					  sed -in-place -e 's/@@@@-uuid-@@@@/'$(cat /proc/sys/kernel/random/uuid)'/g' /etc/v2ray/config.json
 	              fi
 				    ;;
 				c|C)
@@ -282,11 +282,11 @@ while true
 				      echo -e "\n$green 请输入你的Domian名和uuid...$none\n"		 
 		              read -p "(请输入Domian): " server_domain
 					  if [ -n "$server_domain" ]; then
-					  sed -in-place -e 's/@@@@-server-@@@@/$v2ray_uuid/g' /etc/v2ray/config.json
+					  sed -in-place -e 's/@@@@-server-@@@@/'$server_domain'/g' /etc/v2ray/config.json
 	                  fi
 					  read -p "(请输入UUID): "   v2ray_uuid
 		              if [ -n "$v2ray_uuid" ]; then
-					  sed -in-place -e 's/@@@@-uuid-@@@@/$v2ray_uuid/g' /etc/v2ray/config.json
+					  sed -in-place -e 's/@@@@-uuid-@@@@/'$v2ray_uuid'/g' /etc/v2ray/config.json
 	                  fi
   
 				 fi
