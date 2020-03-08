@@ -525,7 +525,7 @@ get_server_ip
 
 while :; do
 	echo
-	echo "........... V2ray/SSR/Trojan快速部署........"
+	echo "\n$green........... V2ray/SSR/Trojan快速部署........"
 	echo
 	echo " 1. 安装和部署V2ray"
 	echo " 2. 安装和部署SSR"
