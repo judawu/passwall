@@ -258,16 +258,23 @@ get_arch
 
 while true
 	do	echo -e "\n$green v2ray已经安装和配置，是否用网站的json文件来替换默认json？...$none\n"
-		read -p "(请输入 [y/n]): " yn
-		if [ -n "$yn" ]; then
-			case "$(first_character "$yn")" in
-				y|Y)
+		read -p "(请输入 [s/c/n]): " sc
+		if [ -n "$sc" ]; then
+			case "$(first_character "$sc")" in
+				s|S)
                   mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
                   if ! wget --no-check-certificate --no-cache -O "/etc/v2ray/config.json" https://raw.githubusercontent.com/judawu/passwall/master/v2ray_server.json; then
                      mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
 		             echo -e "$red 下载config.json 失败$none" 
 	              fi
-				    ;;	
+				    ;;
+				c|C)
+                  mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
+                  if ! wget --no-check-certificate --no-cache -O "/etc/v2ray/config.json" https://raw.githubusercontent.com/judawu/passwall/master/v2ray_client.json; then
+                     mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
+		             echo -e "$red 下载config.json 失败$none" 
+	              fi
+				    ;;		
 				*)					
 					break
 					;;
@@ -293,7 +300,7 @@ while true
 done
 
 while true
-	do  echo -e "\n$green 是否安装Ngnix（如果已经安装Caddy或Ngnix），请忽略...$none\n"		 
+	do  echo -e "\n$green 是否安装Ngnix（如果已经安装Caddy或Ngnix），如果是客户端，请忽略...$none\n"		 
 		read -p "(请输入 [y/n]): " yn
 		if [ -n "$yn" ]; then
 			case "$(first_character "$yn")" in
