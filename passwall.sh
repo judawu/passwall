@@ -499,7 +499,7 @@ fi
 }
 bbr_go() {
 
-if [[$lsb_dist == "debian"]]; then
+if [[ -f /etc/debian_version ]]; then
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
 fi
