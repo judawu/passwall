@@ -192,7 +192,7 @@ get_server_ip() {
 		 server_ip="$(wget -qO- --no-check-certificate https://ipv4.icanhazip.com)"
 	fi
 
-	#echo "$server_ip"
+	echo "$server_ip"
 }
 	is_port() {
 		local port="$1"
@@ -247,7 +247,6 @@ else
 	echo -e " \n这个 ${red}脚本${none} 不支持你的系统。 ${yellow}(-_-) ${none}\n" && exit 1
 fi
 get_os_info
-get_server_ip
 get_arch
 }
  v2ray_go(){
@@ -521,8 +520,8 @@ kcprun_go() {
 
 check_sys
 echo -e "\n$green 你的系统架构是$architecture，软件系统是$lsb_dist，$dist_version...$none\n"
-echo -e "\n$green当前服务器IP是$server_ip，系统检测结束...$none\n"
-	
+echo -e "\n$green当前服务器IP是...$none\n"
+get_server_ip	
 
 while :; do
 	echo
