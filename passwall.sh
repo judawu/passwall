@@ -267,7 +267,7 @@ while true
                      mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
 		             echo -e "$red 下载config.json 失败$none" 
 	              fi
- 			        ;;	
+				    ;;	
 				*)					
 					break
 					;;
