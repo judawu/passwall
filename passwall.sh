@@ -458,8 +458,10 @@ appache_go() {
 
 }
 website_go() {
-      echo -e "\n$green 不好意思，website我还没有写部署步骤，将部署测试工具...$none\n"
-	   if [[ -f /usr/bin/yum ]]; then
+      echo -e "\n$green 网站部署没用弄，搞了简单的网页放在/var/www/html下面做域名伪装吧，并部署探测工具dig...$none\n"
+	  
+	  wget --no-check-certificate --no-cache -O "/var/www/html/index.html" https://raw.githubusercontent.com/judawu/passwall/master/index.html
+  if [[ -f /usr/bin/yum ]]; then
 		sudo yum -y install dnsutils -y
 		
   fi
