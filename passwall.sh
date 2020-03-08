@@ -268,7 +268,7 @@ while true
 		             echo -e "$red 下载config.json 失败$none" 
 				   else
 				      echo -e "\n$green 系统自动产生uuid并写入json...$none\n"		 
-                      v2ray_uuid = $(cat /proc/sys/kernel/random/uuid)
+                      v2ray_uuid=$(cat /proc/sys/kernel/random/uuid)
 					  sed -in-place -e 's/@@@@-uuid-@@@@/$v2ray_uuid/g' /etc/v2ray/config.json
 	              fi
 				    ;;
