@@ -498,7 +498,7 @@ fi
    #dig www.google.com @127.0.0.1 -p 53
 }
 bbr_go() {
-
+  echo -e "\n$green 只针对Debian开启系统自带的BBR...$none\n"
 if [[ -f /etc/debian_version ]]; then
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
