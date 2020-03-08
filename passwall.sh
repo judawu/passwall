@@ -328,7 +328,7 @@ done
  
 acme_go(){
 
- if  [[ -f /usr/bin/socat ]] then
+ if  [[ -f /usr/bin/socat ]];  then
    echo -e "\n$green 已安装依赖socat/netcat...$none\n"   
  else
     if [[ -f /usr/bin/yum ]]; then
