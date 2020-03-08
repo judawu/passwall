@@ -513,7 +513,8 @@ kcprun_go() {
 
 
 check_sys
-echo -e "\n$green 你的系统架构是$architecture，软件系统是$lsb_dist，$dist_version， 当前服务器IP是$server_ip，系统检测结束...$none\n"
+echo -e "\n$green 你的系统架构是$architecture，软件系统是$lsb_dist，$dist_version...$none\n"
+echo -e  ”当前服务器IP是$server_ip，系统检测结束...$none\n"
 	
 
 while :; do
