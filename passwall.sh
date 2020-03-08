@@ -459,8 +459,12 @@ appache_go() {
 }
 website_go() {
       echo -e "\n$green 网站部署没用弄，搞了简单的网页放在/var/www/html下面做域名伪装吧，并部署探测工具dig...$none\n"
-	  
-	  wget --no-check-certificate --no-cache -O "/var/www/html/index.html" https://raw.githubusercontent.com/judawu/passwall/master/index.html
+	  mv /var/www/html/index.nginx-debian.html   index.nginx-debian.html.bk
+                  if ! wget --no-check-certificate --no-cache -O "index.nginx-debian.html" https://raw.githubusercontent.com/judawu/passwall/master/index.html; then
+                     mv index.nginx-debian.html.bk  index.nginx-debian.html
+		             echo -e "$red 下载Nginx default 失败$none" 
+	              fi
+if ! [[ -f /usr/bin/dig ]]; then
   if [[ -f /usr/bin/yum ]]; then
 		sudo yum -y install dnsutils -y
 		
@@ -468,8 +472,8 @@ website_go() {
   if [[ -f /usr/bin/apt-get ]]; then
 		sudo apt-get -y install dnsutils -y
   fi
-	  
-      dig www.google.com @127.0.0.1 -p 53
+fi	  
+   #dig www.google.com @127.0.0.1 -p 53
 }
 bbr_go() {
 
