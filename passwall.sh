@@ -460,7 +460,7 @@ appache_go() {
 website_go() {
       echo -e "\n$green 网站部署没用弄，搞了简单的网页放在/var/www/html下面做域名伪装吧，并部署探测工具dig...$none\n"
 	  mv /var/www/html/index.nginx-debian.html   /var/www/html/index.nginx-debian.html.bk
-                  if ! wget --no-check-certificate --no-cache -O "/var/www/html/index.nginx-debian.html" https://raw.githubusercontent.com/judawu/passwall/master/index.html; then
+                  if ! wget --no-check-certificate --no-cache -O "/var/www/html/index.html" https://raw.githubusercontent.com/judawu/passwall/master/index.html; then
                      mv index.nginx-debian.html.bk  index.nginx-debian.html
 		             echo -e "$red 下载index.html失败,你自己做个伪装吧 $none" 
 	              fi
