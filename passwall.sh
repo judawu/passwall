@@ -279,7 +279,7 @@ while true
 		             echo -e "$red 下载config.json 失败$none" 
 				   else
 				      
-				      echo -e "\n$green 请输入你的Domian名和uuid...$none\n"		 
+				      echo -e "\n$green 请输入你的Domain名和uuid...$none\n"		 
 		              read -p "(请输入Domian): " server_domain
 					  if [ -n "$server_domain" ]; then
 					  sed -in-place -e 's/@@@@-server-@@@@/'$server_domain'/g' /etc/v2ray/config.json
@@ -368,7 +368,7 @@ acme_go(){
  fi
 while true 
   do  
-        echo -e "\n$green 请输入你的Domian名，此Domain用于配置TLS，可能不会配置成功...$none\n"		 
+        echo -e "\n$green 请输入你的Domain名，此Domain用于配置TLS，可能不会配置成功...$none\n"		 
 		read -p "(请输入): " server_domain
 		if [ -n "$yn" ]; then
 			break
