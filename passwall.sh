@@ -309,7 +309,7 @@ while true
 done
 
 while true
-	do  echo -e "\n$green 配置结束了，重启V2ray吧...$none\n"		 
+	do  echo -e "\n$green 配置结束了，重启V2ray吧, 可以用service v2ray restart 来启动服务，配置文件在/etc/v2ray/config.json...$none\n"		 
 		read -p "(请输入 [y/n]): " yn
 		if [ -n "$yn" ]; then
 			case "$(first_character "$yn")" in
@@ -419,6 +419,22 @@ while true
 		fi
 	break
 done
+
+while true
+	do  echo -e "\n$green 配置结束了，重启nginx吧, 可以用service nginx restart 来启动服务，建议先不要启动，修改配置文件在/etc/nginx/sites-available/default...$none\n"		 
+		read -p "(请输入 [y/n]): " yn
+		if [ -n "$yn" ]; then
+			case "$(first_character "$yn")" in
+				y|Y)
+					service nginx restart 
+					;;				
+				*)					
+					break
+					;;
+			esac
+		fi
+	break
+done
 }
 caddy_go() {
    echo -e "\n$green 不好意思，Caddy我还没有写部署步骤...$none\n"
@@ -477,7 +493,7 @@ fi
 }
 bbr_go() {
 
-if $lsb_dist=="debian"; then
+if $lsb_dist = "debian"; then
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
 fi
