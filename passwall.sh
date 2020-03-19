@@ -456,9 +456,9 @@ while true
 				  echo -e "\n$green 请输入你的Domain名，此Domain用于配置TLS，可能不会配置成功...$none\n"		 
 		          read -p "(请输入): " server_domain
 		          if [ -n "$server_domain" ]; then
-			      break
+			         break
 		          else
-		          continue
+		             continue
 		          fi
 				  
                   mv /etc/nginx/sites-available/default   /etc/nginx/sites-available/default.bk 
@@ -467,9 +467,9 @@ while true
 										 
 		             echo -e "$red 下载Nginx default 失败$none" 
 				  else
-				      echo -e "\n$green 系统将domain server 写入 /etc/nginx/sites-available/default...$none\n"		 
+				     echo -e "\n$green 系统将domain server 写入 /etc/nginx/sites-available/default...$none\n"		 
                       
-					  sed -in-place -e 's/v3.juda.monster/'$server_domain'/g' /etc/nginx/sites-available/default
+					 sed -in-place -e 's/v3.juda.monster/'$server_domain'/g' /etc/nginx/sites-available/default
 	              fi
  				   ;;	
 				*)					
