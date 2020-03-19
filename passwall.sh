@@ -449,34 +449,17 @@ fi
 while true
 	do	
 	    echo -e "\n$green nginx已经安装和配置，是否用网站的配置文件来替换默认配置？...$none\n"
-		read -p "(请输入 [y/n]): " yn
-		if [ -n "$yn" ]; then
-			case "$(first_character "$yn")" in
-				y|Y)
-				  echo -e "\n$green 请输入你的Domain名，此Domain用于配置TLS，可能不会配置成功...$none\n"		 
-		          read -p "(请输入): " server_domain
-		          if [ -n "$server_domain" ]; then
-			         break
-		          else
-		             continue
-		          fi
-				  
-                  mv /etc/nginx/sites-available/default   /etc/nginx/sites-available/default.bk 
-                  if ! wget --no-check-certificate --no-cache -O "/etc/nginx/sites-available/default" https://raw.githubusercontent.com/judawu/passwall/master/nginx_default; then
-                     mv /etc/nginx/sites-available/default.bk  /etc/nginx/sites-available/default
-										 
-		             echo -e "$red 下载Nginx default 失败$none" 
-				  else
-				     echo -e "\n$green 系统将domain server 写入 /etc/nginx/sites-available/default...$none\n"		 
-                      
-					 sed -in-place -e 's/v3.juda.monster/'$server_domain'/g' /etc/nginx/sites-available/default
-	              fi
- 				   ;;	
-				*)					
-					break
-					;;
-			esac
-		fi
+		read -p "(请输入域名 [server_domain]): " server_domain
+		if [ -n "$server_domain" ]; then
+			mv /etc/nginx/sites-available/default   /etc/nginx/sites-available/default.bk 
+            if ! wget --no-check-certificate --no-cache -O "/etc/nginx/sites-available/default" https://raw.githubusercontent.com/judawu/passwall/master/nginx_default; then
+                mv /etc/nginx/sites-available/default.bk  /etc/nginx/sites-available/default
+				echo -e "$red 下载Nginx default 失败$none" 
+		    else
+				echo -e "\n$green 系统将domain server 写入 /etc/nginx/sites-available/default...$none\n"		 
+                sed -in-place -e 's/v3.juda.monster/'$server_domain'/g' /etc/nginx/sites-available/default
+	    fi
+ 			
 	break
 done
 
