@@ -250,11 +250,33 @@ get_os_info
 get_arch
 }
  v2ray_go(){
- if  ! [[ -f /etc/v2ray ]]; then
- date -R
- cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
- bash <(curl -L -s https://install.direct/go.sh)
-fi 
+ 
+  if   [[ -f /etc/v2ray ]]; then
+               echo -e "\n$green 已经存在V2ray安装，是否卸载...$none\n"		 
+		       read -p "(请输入Y/N 卸载): " yn
+				 if [ -n "$yn" ]; then
+					  #停用并卸载服务（systemd）：
+                      systemctl stop v2ray
+                      systemctl disable v2ray
+
+                      #停用并卸载服务（sysv）：
+                      #service v2ray stop
+                      #update-rc.d -f v2ray remove
+					  rm -rf /etc/v2ray/*  #(配置文件)
+                      rm -rf /usr/bin/v2ray/*  #(程序)
+                      rm -rf /var/log/v2ray/*  #(日志)
+                      rm -rf /lib/systemd/system/v2ray.service  #(systemd 启动项)
+                      rm -rf /etc/init.d/v2ray  #(sysv 启动项)
+					  
+	             fi
+ fi 
+
+ if   ！[[ -f /etc/v2ray ]]; then
+ 
+  date -R
+  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+  bash <(curl -L -s https://install.direct/go.sh)
+ fi 
 
 while true
 	do	echo -e "\n$green v2ray已经安装和配置，是否用网站的json文件来替换默认json？...$none\n"
@@ -370,7 +392,7 @@ while true
   do  
         echo -e "\n$green 请输入你的Domain名，此Domain用于配置TLS，可能不会配置成功...$none\n"		 
 		read -p "(请输入): " server_domain
-		if [ -n "$yn" ]; then
+		if [ -n "$server_domain" ]; then
 			break
 		else
 		    continue
@@ -432,10 +454,23 @@ while true
 		if [ -n "$yn" ]; then
 			case "$(first_character "$yn")" in
 				y|Y)
+				  echo -e "\n$green 请输入你的Domain名，此Domain用于配置TLS，可能不会配置成功...$none\n"		 
+		          read -p "(请输入): " server_domain
+		          if [ -n "$server_domain" ]; then
+			      break
+		          else
+		          continue
+		          fi
+				  
                   mv /etc/nginx/sites-available/default   /etc/nginx/sites-available/default.bk 
                   if ! wget --no-check-certificate --no-cache -O "/etc/nginx/sites-available/default" https://raw.githubusercontent.com/judawu/passwall/master/nginx_default; then
                      mv /etc/nginx/sites-available/default.bk  /etc/nginx/sites-available/default
+										 
 		             echo -e "$red 下载Nginx default 失败$none" 
+				  else
+				      echo -e "\n$green 系统自动产生uuid并写入json...$none\n"		 
+                      
+					  sed -in-place -e 's/v3.juda.monster/'$server_domain'/g' /etc/nginx/sites-available/default
 	              fi
  				   ;;	
 				*)					
