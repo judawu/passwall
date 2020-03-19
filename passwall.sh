@@ -271,8 +271,7 @@ get_arch
 	             fi
  fi 
 
- if  ![[ -f /etc/v2ray ]]; then
- 
+ if ![[ -f /etc/v2ray ]]; then
   date -R
   cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
   bash <(curl -L -s https://install.direct/go.sh)
