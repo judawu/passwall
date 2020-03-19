@@ -468,7 +468,7 @@ while true
 										 
 		             echo -e "$red 下载Nginx default 失败$none" 
 				  else
-				      echo -e "\n$green 系统自动产生uuid并写入json...$none\n"		 
+				      echo -e "\n$green 系统将domain server 写入 /etc/nginx/sites-available/default...$none\n"		 
                       
 					  sed -in-place -e 's/v3.juda.monster/'$server_domain'/g' /etc/nginx/sites-available/default
 	              fi
