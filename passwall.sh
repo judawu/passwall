@@ -310,6 +310,15 @@ while true
 		              if [ -n "$v2ray_uuid" ]; then
 					  sed -in-place -e 's/@@@@-uuid-@@@@/'$v2ray_uuid'/g' /etc/v2ray/config.json
 	                  fi
+					  read -p "(请输入SS的密码): "   v2ray_SSpwd
+		              if [ -n "$v2ray_SSpwd ]; then
+					  sed -in-place -e 's/@@@@PASSWORD@@@/'$v2ray_SSpwd'/g' /etc/v2ray/config.json
+					  res=`echo -n aes-128-gcm:${v2ray_SSpwd}@$(wget -qO- --no-check-certificate https://ipv4.icanhazip.com):10005 | base64 -w 0`
+                      link="ss://${res}"
+					  echo " ss链接： ${link}"
+					  apt install -y qrencode
+                      qrencode -o - -t utf8 ${link}
+	                  fi
   
 				 fi
 				    ;;		
@@ -429,7 +438,8 @@ done
 
 
 ssr_go() {
- echo -e "\n$green 不好意思，SSR我还没有写部署步骤...$none\n"
+ echo -e "\n$green 不好意思，SSR我还没有写部署步骤，可以开启V2ray的SS进行配置，路径为/etc/v2ray/config.json...$none\n"
+    
 }
 trojan_go() {
  echo -e "\n$green 不好意思，TROJAN我还没有写部署步骤...$none\n"
