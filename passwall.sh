@@ -375,7 +375,7 @@ done
  }
  
 acme_go(){
- apt-get install sudo
+ 
  if  [[ -f /usr/bin/socat ]]; then
    echo -e "\n$green 已安装依赖socat/netcat...$none\n"   
  else
