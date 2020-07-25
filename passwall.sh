@@ -295,7 +295,7 @@ while true
 					  
 					  read -p "(请输入SS的密码): " v2ray_SSpwd
 		              if [ -n "$v2ray_SSpwd" ]; then
-					  sed -in-place -e 's/@@@@PASSWORD@@@/'$v2ray_SSpwd'/g' /etc/v2ray/config.json
+					  sed -in-place -e 's/@@@PASSWORD@@@/'$v2ray_SSpwd'/g' /etc/v2ray/config.json
 					  res=`echo -n aes-128-gcm:${v2ray_SSpwd}@$(wget -qO- --no-check-certificate https://ipv4.icanhazip.com):10005 | base64 -w 0`
                       link="ss://${res}"
 					  echo " ss链接： ${link}"
