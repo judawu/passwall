@@ -274,6 +274,7 @@ get_arch
  if ! [[ -f /etc/v2ray ]]; then
     date -R
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	apt-get install curl
     bash <(curl -L -s https://install.direct/go.sh)
  fi 
 
@@ -374,7 +375,7 @@ done
  }
  
 acme_go(){
-
+ apt-get install sudo
  if  [[ -f /usr/bin/socat ]]; then
    echo -e "\n$green 已安装依赖socat/netcat...$none\n"   
  else
