@@ -20,7 +20,7 @@
         "domains": [
          // "geosite:cn",
           "ntp.org",   // NTP 服务器
-         // "$myserver.address" // 此处改为你 VPS 的域名
+          "@@@@-server-@@@@",  // "$myserver.address" // 此处改为你 VPS 的域名
         ],
 		 "expectIPs": [
          "geoip:cn"

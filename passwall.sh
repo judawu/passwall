@@ -305,6 +305,7 @@ while true
 	              fi
 				    ;;
 				c|C)
+				  echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf && sysctl -p
                   mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
                   if ! wget --no-check-certificate --no-cache -O "/etc/v2ray/config.json" https://raw.githubusercontent.com/judawu/passwall/master/v2ray_client.json; then
                      mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
@@ -323,6 +324,8 @@ while true
 					  read -p "(请输入SS的密码): " v2ray_SSpwd
 		              if [ -n "$v2ray_SSpwd" ]; then
 					  sed -in-place -e 's/@@@@PASSWORD@@@/'$v2ray_SSpwd'/g' /etc/v2ray/config.json
+					  iptable_go
+					  tproxyrule_go
 					  res=`echo -n aes-128-gcm:${v2ray_SSpwd}@$(wget -qO- --no-check-certificate https://ipv4.icanhazip.com):10005 | base64 -w 0`
                       link="ss://${res}"
 					  echo " ss链接： ${link}"
@@ -561,17 +564,67 @@ bbr_go() {
 if [[ -f /etc/debian_version ]]; then
 
 cat >>/etc/sysctl.conf<<EOF
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
+      net.core.default_qdisc=fq
+      net.ipv4.tcp_congestion_control=bbr
 EOF
 #echo 'net.core.default_qdisc=fq'>>/etc/sysctl.conf
 #echo 'net.ipv4.tcp_congestion_control=bbr'>>/etc/sysctl.conf
-
-
-
 sysctl -p
 fi
+}
 
+iptable_go() {
+# 设置策略路由
+ip rule add fwmark 1 table 100
+ip route add local 0.0.0.0/0 dev lo table 100
+
+# 代理局域网设备
+iptables -t mangle -N V2RAY
+iptables -t mangle -A V2RAY -d 127.0.0.1/32 -j RETURN
+iptables -t mangle -A V2RAY -d 224.0.0.0/4 -j RETURN
+iptables -t mangle -A V2RAY -d 255.255.255.255/32 -j RETURN
+iptables -t mangle -A V2RAY -d 192.168.0.0/16 -p tcp -j RETURN # 直连局域网，避免 V2Ray 无法启动时无法连网关的 SSH，如果你配置的是其他网段（如 10.x.x.x 等），则修改成自己的
+iptables -t mangle -A V2RAY -d 192.168.0.0/16 -p udp ! --dport 53 -j RETURN # 直连局域网，53 端口除外（因为要使用 V2Ray 的 
+iptables -t mangle -A V2RAY -p udp -j TPROXY --on-port 12345 --tproxy-mark 1 # 给 UDP 打标记 1，转发至 12345 端口
+iptables -t mangle -A V2RAY -p tcp -j TPROXY --on-port 12345 --tproxy-mark 1 # 给 TCP 打标记 1，转发至 12345 端口
+iptables -t mangle -A PREROUTING -j V2RAY # 应用规则
+
+# 代理网关本机
+iptables -t mangle -N V2RAY_MASK
+iptables -t mangle -A V2RAY_MASK -d 224.0.0.0/4 -j RETURN
+iptables -t mangle -A V2RAY_MASK -d 255.255.255.255/32 -j RETURN
+iptables -t mangle -A V2RAY_MASK -d 192.168.0.0/16 -p tcp -j RETURN # 直连局域网
+iptables -t mangle -A V2RAY_MASK -d 192.168.0.0/16 -p udp ! --dport 53 -j RETURN # 直连局域网，53 端口除外（因为要使用 V2Ray 的 DNS）
+iptables -t mangle -A V2RAY_MASK -j RETURN -m mark --mark 0xff    # 直连 SO_MARK 为 0xff 的流量(0xff 是 16 进制数，数值上等同与上面V2Ray 配置的 255)，此规则目的是避免代理本机(网关)流量出现回环问题
+iptables -t mangle -A V2RAY_MASK -p udp -j MARK --set-mark 1   # 给 UDP 打标记,重路由
+iptables -t mangle -A V2RAY_MASK -p tcp -j MARK --set-mark 1   # 给 TCP 打标记，重路由
+iptables -t mangle -A OUTPUT -j V2RAY_MASK # 应用规则
+
+#将 iptables 规则保存到 /etc/iptables/rules.v4
+mkdir -p /etc/iptables && iptables-save > /etc/iptables/rules.v4
+
+}
+
+tproxyrule_go() 
+{
+#在 /etc/systemd/system/ 目录下创建一个名为 tproxyrule.service
+cat >>/etc/systemd/system/tproxyrule.service <<EOF
+[Unit]
+Description=Tproxy rule
+After=network.target
+Wants=network.target
+
+[Service]
+
+Type=oneshot
+#注意分号前后要有空格
+ExecStart=/sbin/ip rule add fwmark 1 table 100 ; /sbin/ip route add local 0.0.0.0/0 dev lo table 100 ; /sbin/iptables-restore /etc/iptables/rules.v4
+
+[Install]
+WantedBy=multi-user.target
+EOF
+#行下面的命令使 tproxyrule.service 可以开机自动运行
+systemctl enable tproxyrule
 }
 udpspd2raw_go() {
 
