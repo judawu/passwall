@@ -1,37 +1,4 @@
 {
-  "dns": {
-   "servers": [
-   
-     {
-       "address": "8.8.8.8",
-       "port": 53,
-       "domains": [
-         "geosite:geolocation-!cn",
-         "geosite:speedtest",
-         "ext:h2y.dat:gfw"
-       ]
-     },
-     "1.1.1.1",
-	 "114.114.114.114",
-	 "114.114.115.115",
-	  {//中国大陆域名使用阿里的 DNS
-        "address": "223.5.5.5", 
-        "port": 53,
-        "domains": [
-         // "geosite:cn",
-          "ntp.org",   // NTP 服务器
-          "@@@@-server-@@@@",  // "$myserver.address" // 此处改为你 VPS 的域名
-        ],
-		 "expectIPs": [
-         "geoip:cn"
-       ]
-      }
-     "localhost"
-   ]
- }
-
-
-
   "inbounds": [
     {
       "tag":"transparent",
@@ -66,23 +33,26 @@
       "settings": {
         "auth": "noauth",
         "udp": false
-      }
+                  }
     },
 	 {
-      "port": 1180, 
-      "protocol": "socks", 
+      "port": 1180,
+      "protocol": "socks",
       "sniffing": {
         "enabled": true,
         "destOverride": ["http", "tls"]
       },
       "settings": {
-        "auth": "noauth"  
+        "auth": "noauth"
       }
     }
-  ],
-  "outbounds": [
-    {// VMESS
-	  "tag": "proxy",
+ ],
+
+
+ "outbounds": [
+    {
+       // VMESS
+      "tag": "proxy",
       "protocol": "vmess",
       "settings": {
         "vnext": [
@@ -102,33 +72,34 @@
         "network": "ws",
         "security": "tls",
         "wsSettings": {
-          "path": "/aabbccdd/"
+        "path": "/aabbccdd/"
                       },
-		 "sockopt": {
+        "sockopt": {
           "mark": 255
                     }
                         },
 	   "mux": {
         "enabled": true
-      }
-    }, 
-	
-	{// Shadowsocks 
+                  }
+    },
+
+    {
+   // Shadowsocks
       "protocol": "shadowsocks",
       "settings": {
-        "servers": [
-          {
+      "servers": [
+       {
             "address": "@@@@-server-@@@@", // Shadowsocks 的服务器地址
             "method": "aes-128-gcm", // Shadowsocks 的加密方式
             "AEAD": true, // 是否开启 OTA，true 为开启
             "password": "@@@PASSWORD@@@", // Shadowsocks 的密码
-            "port": 10005  
-          }
+            "port": 10005
+       }
                    ]
                   }
     },
-	
-	{//如果要使用路由，这个 tag 是一定要有的，在这里 direct 就是 freedom 的一个标号，在路由中说 direct V2Ray 就知道是这里的 freedom 了
+{
+//如果要使用路由，这个 tag 是一定要有的，在这里 direct 就是 freedom 的一个标号，在路由中说 direct V2Ray 就知道是这里的 freedom 了
 	 "tag": "direct",
      "protocol": "freedom",
      "settings": {
@@ -138,9 +109,10 @@
       "sockopt": {
       "mark": 255
                  }
-	                    } 
+	                    }
     },
-    {//在路由中说 adblock 就知道是这里的 blackhole（黑洞） 了
+    {
+//在路由中说 adblock 就知道是这里的 blackhole（黑洞） 了
       "tag": "adblock",
 	  "protocol": "blackhole",
       "settings": {
@@ -149,19 +121,54 @@
                     }
                   }
     },
-    {//DNS
+    {
+//DNS
       "tag": "dns-out",
       "protocol": "dns",
       "streamSettings": {
         "sockopt": {
           "mark": 255
                    }
-                        }  
-    }	
-  ]
-  "routing": {
+                        }
+
+   }
+],
+
+"dns": {
+   "servers": [
+
+     "1.1.1.1",
+     "114.114.114.114",
+     "114.114.115.115",
+    {
+      //中国大陆域名使用阿里的 DNS
+        "address": "223.5.5.5",
+        "port": 53,
+        "domains":[
+         // "geosite:cn",
+          "ntp.org",   // NTP 服务器
+          "v6.juda.monster"  // "$myserver.address" // 此处改为你 VPS 的域名
+                   ],
+         "expectIPs":[
+         "geoip:cn"
+                     ]
+      },
+    {
+       "address": "8.8.8.8",
+       "port": 53,
+       "domains": [
+         "geosite:geolocation-!cn",
+         "geosite:speedtest"
+                  ]
+     },
+     "localhost"
+                  ]
+ },
+
+ "routing": {
     "domainStrategy": "IPOnDemand",
-    "rules": [
+
+"rules": [
 	  { // 劫持 53 端口 UDP 流量，使用 V2Ray 的 DNS
         "type": "field",
         "inboundTag": [
@@ -169,8 +176,8 @@
                       ],
         "port": 53,
         "network": "udp",
-        "outboundTag": "dns-out" 
-      }, 
+        "outboundTag": "dns-out"
+      },
 	  { // 直连 123 端口 UDP 流量（NTP 协议）
         "type": "field",
         "inboundTag": [
@@ -178,41 +185,43 @@
                       ],
         "port": 123,
         "network": "udp",
-        "outboundTag": "direct" 
-       },    
-	  { // 设置 DNS 配置中的国内 DNS 服务器地址直连，以达到 DNS 分流目的
-        "type": "field", 
-        "ip": [     
+        "outboundTag": "direct"
+       },
+{ // 设置 DNS 配置中的国内 DNS 服务器地址直连，以达到 DNS 分流目的
+        "type": "field",
+        "ip": [
           "223.5.5.5",
-          "114.114.114.114"
+          "114.114.114.114",
+		  "114.114.115.115"
               ],
         "outboundTag": "direct"
       },
-	  { / 设置代理Vmess
+	  { // 设置代理Vmess
         "type": "field",
-        "ip": [ 
+        "ip": [
           // 设置 DNS 配置中的国内 DNS 服务器地址走代理，以达到 DNS 分流目的
           "8.8.8.8",
           "1.1.1.1"
               ],
         "outboundTag": "proxy" // 改为你自己代理的出站 tag
-      },	 
-      {  // 广告拦截  
+      },
+ {  // 广告拦截
         "domain": [
           "tanx.com",
           "googeadsserving.cn",
-          "baidu.com"
+          "baidu.com",
 		  "geosite:category-ads-all"
                   ],
         "type": "field",
-        "outboundTag": "adblock"       
+        "outboundTag": "adblock"
       },
 	  { // BT 流量直连
         "type": "field",
-        "protocol":["bittorrent"], 
+        "protocol":["bittorrent"],
         "outboundTag": "direct"
       },
-      {// 特殊网站直连
+ {
+//特殊网站直连
         "domain": [
           "amazon.com",
           "microsoft.com",
@@ -223,12 +232,14 @@
         "type": "field",
         "outboundTag": "direct"
       },
-      {// 直连中国大陆主流网站域名
+      {
+// 直连中国大陆主流网站域名
         "type": "field",
         "outboundTag": "direct",
         "domain": ["geosite:cn"]
       },
-      {// 直连中国大陆主流网站 ip 和 保留 ip
+ {
+// 直连中国大陆主流网站 ip 和 保留 ip
         "type": "field",
         "outboundTag": "direct",
         "ip": [
@@ -236,7 +247,6 @@
           "geoip:private"
               ]
       }
-             ]
-             }
-  
+        ]
+}
 }
