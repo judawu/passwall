@@ -1,4 +1,9 @@
 {
+ "log": {
+  "access": "/var/log/v2ray/access.log",
+   "error": "/var/log/v2ray/err.log",
+    "loglevel": "debug"
+  },
   "inbounds": [
     {
       "tag":"transparent",
@@ -80,16 +85,16 @@
                         },
 	   "mux": {
         "enabled": true
-                  }
+                 }
     },
 
     {
    // Shadowsocks
       "protocol": "shadowsocks",
       "settings": {
-      "servers": [
+     "servers": [
        {
-            "address": "@@@@-server-@@@@", // Shadowsocks 的服务器地址
+           "address": "@@@@-server-@@@@", // Shadowsocks 的服务器地址
             "method": "aes-128-gcm", // Shadowsocks 的加密方式
             "AEAD": true, // 是否开启 OTA，true 为开启
             "password": "@@@PASSWORD@@@", // Shadowsocks 的密码
@@ -136,7 +141,8 @@
 
 "dns": {
    "servers": [
-
+//  "8.8.8.8",
+  //"223.5.5.5",
      "1.1.1.1",
      "114.114.114.114",
      "114.114.115.115",
@@ -145,13 +151,13 @@
         "address": "223.5.5.5",
         "port": 53,
         "domains":[
-         // "geosite:cn",
-          "ntp.org",   // NTP 服务器
+          "geosite:cn",
+          "ntp.org" ,  // NTP 服务器
           "v6.juda.monster"  // "$myserver.address" // 此处改为你 VPS 的域名
-                   ],
-         "expectIPs":[
-         "geoip:cn"
-                     ]
+                   ]
+ //        "expectIPs":[
+   //      "geoip:cn"
+     //                ]
       },
     {
        "address": "8.8.8.8",
@@ -187,15 +193,6 @@
         "network": "udp",
         "outboundTag": "direct"
        },
-{ // 设置 DNS 配置中的国内 DNS 服务器地址直连，以达到 DNS 分流目的
-        "type": "field",
-        "ip": [
-          "223.5.5.5",
-          "114.114.114.114",
-		  "114.114.115.115"
-              ],
-        "outboundTag": "direct"
-      },
 	  { // 设置代理Vmess
         "type": "field",
         "ip": [
@@ -205,12 +202,21 @@
               ],
         "outboundTag": "proxy" // 改为你自己代理的出站 tag
       },
+{ // 设置 DNS 配置中的国内 DNS 服务器地址直连，以达到 DNS 分流目的
+        "type": "field",
+       "ip": [
+          "223.5.5.5",
+          "114.114.114.114",
+          "114.114.115.115"
+              ],
+        "outboundTag": "direct"
+      },
+
  {  // 广告拦截
         "domain": [
           "tanx.com",
           "googeadsserving.cn",
-          "baidu.com",
-		  "geosite:category-ads-all"
+          "geosite:category-ads-all"
                   ],
         "type": "field",
         "outboundTag": "adblock"
