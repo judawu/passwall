@@ -14,3 +14,5 @@ wget https://raw.githubusercontent.com/judawu/passwall/master/passwall.sh && chm
 #今天20200307 编写了paswall的框架，计划明天先测试V2ray+websokcet+TSL功能，服务器准备新建一个谷歌云，客户端在PXE里面增加一个DEBian 10的系统，只提供自动修改UUID功能
 
 #今天20200725 增加开启V2RAY自带的SS功能（方便苹果IOS客户端利用OUTLINE翻墙），增加SS字符串和二维码生成，只提供修改SS密码功能，新买了一个搬瓦工主机，谷歌云费钱太快，网速也慢
+
+#今天20200817 增加了几个代理的设置，配置了一个Ubuntu的客户端，修改了客户端和服务器的配置，支持了多种通讯协议
