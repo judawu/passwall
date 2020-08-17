@@ -556,6 +556,8 @@ ssr_go() {
 }
 trojan_go() {
  echo -e "\n$green 不好意思，TROJAN我还没有写部署步骤...$none\n"
+ sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/trojan-gfw/trojan-quickstart/master/trojan-quickstart.sh)"
+ 
 }
 ngnix_go() {
 
