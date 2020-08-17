@@ -62,11 +62,11 @@
       "settings": {
         "vnext": [
           {
-            "address": "v6.juda.monster",
+            "address": "@@@@-server-@@@@",
             "port": 443,
             "users": [
               {
-                "id": "bf8a6a01-bafd-4a9b-9378-5d1ae9c78726",
+                "id": "@@@@-server-@@@@",
                 "alterId": 133
               }
                      ]
@@ -94,10 +94,10 @@
       "settings": {
      "servers": [
        {
-           "address": "v6.juda.monster", // Shadowsocks 的服务器地址
+           "address": "@@@@-server-@@@@", // Shadowsocks 的服务器地址
             "method": "aes-128-gcm", // Shadowsocks 的加密方式
             "AEAD": true, // 是否开启 OTA，true 为开启
-            "password": "edgar", // Shadowsocks 的密码
+            "password": "@@@@@-Passwd-@@@@@", // Shadowsocks 的密码
             "port": 10005
        }
                    ]
@@ -152,8 +152,8 @@
         "port": 53,
         "domains":[
           "geosite:cn",
-          "ntp.org" ,  // NTP 服务器
-          "v6.juda.monster"  // "$myserver.address" // 此处改为你 VPS 的域名
+          "ntp.org"  // NTP 服务器
+          
                    ]
  //        "expectIPs":[
    //      "geoip:cn"

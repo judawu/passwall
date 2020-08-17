@@ -1,0 +1,308 @@
+{
+ "log": {
+  "access": "/var/log/v2ray/access.log",
+   "error": "/var/log/v2ray/err.log",
+    "loglevel": "warning"
+
+         },
+"policy": {
+    "levels": {
+      "0": {
+        "uplinkOnly": 0,
+        "downlinkOnly": 0,
+        "connIdle": 150,
+        "handshake": 4
+      }
+    }
+  },
+
+
+ "dns": {
+   "servers": [
+     "https+local://1.1.1.1/dns-query",
+     "localhost"
+   ]
+ },
+ "routing": {
+        "domainStrategy": "AsIs",
+        "rules": [
+            {
+                "type": "field",
+                "ip": [
+                    "geoip:private"
+                ],
+                "outboundTag": "block"
+            }
+        ]
+    },
+
+  "inbounds": [
+    {
+      "port": 10000,
+      "listen":"127.0.0.1",//只监听 127.0.0.1，避免除本机外的机器探测到开放了 10000 端口
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "@@@@-uuid-@@@@",
+            "level": 0,
+            "alterId": 133
+          }
+            ],
+            "disableInsecureEncryption": true
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+        "path": "/aabbccdd/",
+        "headers": {
+                        "Host": "@@@@-server-@@@@"
+                    },
+        "security": "none"
+        }
+      }
+    },
+ {
+      "port": 10002,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "@@@@-uuid-@@@@",
+         "level": 1,
+         "alterId": 132
+          }
+        ],
+        "detour": {
+          "to": "dynamicPort"
+        }
+      },
+      "streamSettings": {
+        "network": "mkcp", //此处的 mkcp 也可写成 kcp，两种写法是起同样的效果
+        "kcpSettings": {
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 100,
+          "congestion": true,
+          "header": {
+            "type": "none"
+          }
+        }
+      }
+
+
+    },
+ {
+      "protocol": "vmess",
+      "port": "11000-20000", // 端口范围
+      "tag": "dynamicPort",
+      "settings": {
+        "default": {
+          "level": 1,
+          "alterId": 32
+        }
+      },
+      "allocate": {            // 分配模式
+        "strategy": "random",  // 随机开启
+        "concurrency": 2,      // 同时开放两个端口
+        "refresh": 3           // 每三分钟刷新一次
+      },
+      "streamSettings": {
+        "network": "kcp",
+          "kcpSettings": {
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 100,
+          "congestion": true,
+          "header": {
+            "type": "none"
+          }
+        }
+
+      }
+    },
+
+{
+      "port": 10003, //推荐80端口，更好地迷惑防火墙（好吧实际上并没有什么卵用
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "@@@@-uuid-@@@@",
+            "level": 2,
+            "alterId": 131
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {
+          "header": { // header 这一项是关于数据包伪装的设置，可自定义合理的内容，但要确保服务器与客户端一致
+            "type": "http",
+            "response": {
+              "version": "1.1",
+              "status": "200",
+              "reason": "OK",
+              "headers": {
+                "Content-Type": ["application/octet-stream", "application/x-msdownload", "text/html", "application/x-shockwave-flash"],
+                "Transfer-Encoding": ["chunked"],
+                "Connection": ["keep-alive"],
+                "Pragma": "no-cache"
+              }
+            }
+          }
+        }
+      }
+    },
+
+
+ {
+      "port": 10004, // 监听端口
+      "protocol": "http",
+      "settings": {
+        "timeout:":0,
+        "accounts":[
+          {
+            "user":"@@@@@-User-@@@@@",
+            "pass":"@@@@@-Passwd-@@@@@"
+          }
+        ],
+        "allowTransparent":false,
+        "userLevel":0
+      },
+   "streamSettings": {
+ "network": "tcp",
+          "security": "tls", //如果是HTTPS代理,需要將none改為tls
+          "tlsSettings": {
+           "certificates": [
+                        {
+                            "certificateFile": "/etc/v2ray/v2ray.crt",
+                            "keyFile": "/etc/v2ray/v2ray.key"
+                        }
+                                          ] 
+          }
+      }
+    },
+	{
+      "port": 10005, // 监听端口
+      "protocol": "shadowsocks",
+      "settings": {
+        "method": "aes-128-gcm",
+        "AEAD": true, // 是否开启 OTA
+        "password": "@@@@@-Passwd-@@@@@"
+      }
+    },
+
+ {
+      "port": 10007,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "@@@@-uuid-@@@@",
+            "alterId": 129
+          }
+                    ],
+          "decryption":"none"
+
+      },
+      "streamSettings": {
+        "network": "h2", // h2 也可写成 http，效果一样
+        "httpSettings": { //此项是关于 HTTP/2 的设置
+          "path": "/ddaabbcc/"
+        },
+        "security": "tls", // 配置tls
+        "tlsSettings": {
+          "certificates": [
+            {
+              "certificateFile": "/etc/v2ray/v2ray.crt", // 证书文件，详见 tls 小节
+              "keyFile": "/etc/v2ray/v2ray.key" // 密钥文件
+            }
+          ]
+        }
+      }
+
+    },
+
+{
+            "port": 10008,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "@@@@-uuid-@@@@", // 填写你的 UUID
+                        "level": 0,
+                        "email": "love@v2fly.org"
+                    }
+                ],
+                "decryption": "none",
+                "fallback": {
+                    "unix": "/dev/shm/default.sock",
+                    "xver": 1
+                },
+                "fallback_h2": {
+                    "unix": "/dev/shm/h2.sock",
+                    "xver": 1
+                }
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "tls",
+                "tlsSettings": {
+                    "alpn": [
+                        "h2",
+                        "http/1.1"
+                    ],
+                    "certificates": [
+                        {
+                            "certificateFile": "/etc/v2ray/v2ray.crt", // 换成你的证书，绝对路径
+                              "keyFile": "/etc/v2ray/v2ray.key"  // 换成你的私钥，绝对路径
+                        }
+                    ]
+                }
+            }
+        },
+
+
+
+      {
+            "listen": "0.0.0.0",
+            "port": 10006,
+            "protocol": "socks",
+            "settings": {
+                "auth": "password",
+                "accounts": [
+                    {
+                        "user": "@@@@@-User-@@@@@",
+                        "pass": "@@@@@-Passwd-@@@@@"
+                    }
+                ],
+                "udp": true,
+                "ip": "127.0.0.1"
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "tls",
+                "tlsSettings": {
+                    "certificates": [
+                        {
+                            "certificateFile": "/etc/v2ray/v2ray.crt",
+                            "keyFile": "/etc/v2ray/v2ray.key"
+                        }
+                    ]
+                }
+            }
+        }
+    
+	
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"
+    },
+     {
+            "protocol": "blackhole",
+            "tag": "block"
+        }
+  ]
+}

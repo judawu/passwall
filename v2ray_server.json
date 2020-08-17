@@ -27,7 +27,7 @@
       "settings": {
         "method": "aes-128-gcm",
         "AEAD": true, // 是否开启 OTA
-        "password": "@@@PASSWORD@@@"
+        "password": "@@@@@-Passwd-@@@@@"
       }
     }
 	

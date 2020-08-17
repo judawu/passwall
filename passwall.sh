@@ -323,7 +323,7 @@ while true
 	                  fi
 					  read -p "(请输入SS的密码): " v2ray_SSpwd
 		              if [ -n "$v2ray_SSpwd" ]; then
-					  sed -in-place -e 's/@@@@PASSWORD@@@/'$v2ray_SSpwd'/g' /etc/v2ray/config.json
+					  sed -in-place -e 's/@@@@@-Passwd-@@@@@/'$v2ray_SSpwd'/g' /etc/v2ray/config.json
 					  iptable_go
 					  tproxyrule_go
 					  res=`echo -n aes-128-gcm:${v2ray_SSpwd}@$(wget -qO- --no-check-certificate https://ipv4.icanhazip.com):10005 | base64 -w 0`
@@ -396,6 +396,106 @@ done
 
  }
  
+  updatev2ray_go(){
+  sudo bash <(curl -L -s https://install.direct/go.sh)
+  }
+  
+  updatev2rayconfig_go(){
+   if   ![[ -f /etc/v2ray ]]; then
+               echo -e "\n$green V2ray没有安装...$none\n"	
+			   v2ray_go
+   fi
+  while true
+	do	echo -e "\n$green v2ray已经安装和配置，是否用网站的json_full文件来替换默认json？...$none\n"
+		read -p "(请输入 [s/c/n]): " sc
+		if [ -n "$sc" ]; then
+			case "$(first_character "$sc")" in
+				s|S)
+                  mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
+                  if ! wget --no-check-certificate --no-cache -O "/etc/v2ray/config.json" https://raw.githubusercontent.com/judawu/passwall/master/v2ray_server_full.json; then
+                     mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
+		             echo -e "$red 下载config.json 失败$none" 
+				   else
+				      echo -e "\n$green 系统自动产生uuid并写入json...$none\n"		 
+                      
+					  sed -in-place -e 's/@@@@-uuid-@@@@/'$(cat /proc/sys/kernel/random/uuid)'/g' /etc/v2ray/config.json
+					  read -p "(请输入user): " v2ray_usr,
+					  read -p "(请输入Password): " v2ray_pwd,
+		              if [ -n "$v2ray_Usr" ] && [ -n "$v2ray_pwd" ]; then
+					  sed -in-place -e 's/@@@@@-User-@@@@@/'$v2ray_pwd'/g' /etc/v2ray/config.json
+					  sed -in-place -e 's/@@@@@-Passwd-@@@@@/'$v2ray_usr'/g' /etc/v2ray/config.json
+					  res=`echo -n aes-128-gcm:${v2ray_SSpwd}@$(wget -qO- --no-check-certificate https://ipv4.icanhazip.com):10005 | base64 -w 0`
+                      link="ss://${res}"
+					  echo " ss链接： ${link}"
+					  apt install -y qrencode
+                      qrencode -o - -t utf8 ${link}
+	                  fi
+					  echo -e "\n$green v2ray已经更新配置$none\n"
+	              fi
+				    ;;
+				c|C)
+				  
+                  mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
+                  if ! wget --no-check-certificate --no-cache -O "/etc/v2ray/config.json" https://raw.githubusercontent.com/judawu/passwall/master/v2ray_client_full.json; then
+                     mv /etc/v2ray/config.json  /etc/v2ray/config.json.bk
+		             echo -e "$red 下载config.json 失败$none" 
+				   else
+				      
+				      echo -e "\n$green 请输入你的Domain名和uuid...$none\n"		 
+		              read -p "(请输入Domian): " server_domain
+					  if [ -n "$server_domain" ]; then
+					  sed -in-place -e 's/@@@@-server-@@@@/'$server_domain'/g' /etc/v2ray/config.json
+	                  fi
+					  read -p "(请输入UUID): "   v2ray_uuid
+		              if [ -n "$v2ray_uuid" ]; then
+					  sed -in-place -e 's/@@@@-uuid-@@@@/'$v2ray_uuid'/g' /etc/v2ray/config.json
+	                  fi
+					  read -p "(请输入User): " v2ray_Usr
+		              if [ -n "$v2ray_Usr" ]; then
+					  sed -in-place -e 's/@@@@@-User-@@@@@/'$v2ray_SSpwd'/g' /etc/v2ray/config.json
+					  fi
+					  read -p "(请输入密码): " v2ray_pwd
+					  
+		              if [ -n "$v2ray_pwd" ]; then
+					  sed -in-place -e 's/@@@@@-Passwd-@@@@@/'$v2ray_SSpwd'/g' /etc/v2ray/config.json
+					  fi
+				     echo "\n$green选择通讯协议"
+               	     echo " 1. VMESS+TLS+WS+Nginx"
+	                 echo " 2. Socks+TLS"
+				     echo " 3. Http+TLS"
+				     echo " 4. Vmess+Http伪装"
+				     echo " 5. VLESS+H2+TLS"
+				     echo " 6. VLESS+TCP+TLS"
+                     echo " 7. shadowsocks"
+	                 echo
+	                 read -p "请选择[1-10]:" v2ray_protocol
+	          
+                     sed -in-place -e 's/@@@@-A-@@@@/'$v2ray_protocol'/g' /etc/v2ray/config.json
+	        		  
+					  
+                     echo -e "\n$green v2ray已经更新配置，将配置Nginx$none\n"
+				      if [ -n "$server_domain" ]; then
+			         mv /etc/nginx/sites-available/default   /etc/nginx/sites-available/default.bk 
+                     if ! wget --no-check-certificate --no-cache -O "/etc/nginx/sites-available/default" https://raw.githubusercontent.com/judawu/passwall/master/nginx_default_more; then
+                     mv /etc/nginx/sites-available/default.bk  /etc/nginx/sites-available/default
+				     echo -e "$red 下载Nginx default 失败$none" 
+		             else
+				     echo -e "\n$green 系统将domain server 写入 /etc/nginx/sites-available/default...$none\n"		 
+                     sed -in-place -e 's/@@@@-server-@@@@/'$server_domain'/g' /etc/nginx/sites-available/default
+			         fi
+	    fi
+		          fi
+				 ;;
+		   *)					
+					break
+					;;
+			esac
+	    fi
+	break
+done
+  
+  
+  }
 acme_go(){
  
  if  [[ -f /usr/bin/socat ]]; then
@@ -481,7 +581,7 @@ while true
 				echo -e "$red 下载Nginx default 失败$none" 
 		    else
 				echo -e "\n$green 系统将domain server 写入 /etc/nginx/sites-available/default...$none\n"		 
-                sed -in-place -e 's/v3.juda.monster/'$server_domain'/g' /etc/nginx/sites-available/default
+                sed -in-place -e 's/@@@@-server-@@@@/'$server_domain'/g' /etc/nginx/sites-available/default
 			fi
 	    fi
  			
@@ -659,8 +759,8 @@ while :; do
 	echo " 9. 安装和部署伪装网站,探测工具等"
 	echo " 10. 安装和部署udpspeed，upd2raw"
 	echo " 11. 安装和部署kcprun"
-	
-	
+	echo " 12. 更新V2ray"
+	echo " 13. 更新V2ray配置文件为Full"
 	echo
 	read -p "请选择[1-10]:" choose
 	case $choose in
@@ -706,6 +806,15 @@ while :; do
 		;;			
 	11)
 		kcprun_go
+		break
+		;;
+	11)
+		UpdateV2ray_go
+		break
+		;;
+	11)
+		UpdateV2rayConfig_go
+		break
 		;;
 	*)
 		any_key_to_continue

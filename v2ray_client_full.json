@@ -1,0 +1,588 @@
+{
+ "log": {
+  "access": "/var/log/v2ray/access.log",
+   "error": "/var/log/v2ray/err.log",
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag":"transparent",
+      "port": 12345,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "network": "tcp,udp",
+        "followRedirect": true
+                  },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+                        ]
+                  },
+      "streamSettings": {
+        "sockopt": {
+          "tproxy": "tproxy" // 透明代理使用 TPROXY 方式
+                   }
+                        }
+    },
+
+   {
+      "port": 1080,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth",
+        "udp": false
+                  }
+    },
+       {
+            "listen": "127.0.0.1",
+            "port": 1081,
+            "protocol": "http"
+        },
+	 {
+      "port": 1180,
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+ ],
+
+
+ "outbounds": [
+    {
+       // VMESS
+      "tag": "proxy1",
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "@@@@-server-@@@@",
+            "port": 443,
+            "users": [
+              {
+                "id": "@@@@-uuid-@@@@",
+                "alterId": 133,
+                //"encryption":"none"
+                   "security": "auto",
+                   "testsEnabled": "VMessAEAD"
+              }
+                     ]
+          }
+                 ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "wsSettings": {
+        "path": "/aabbccdd/",
+        "headers": {
+                        "Host": "@@@@-server-@@@@"
+                    }
+                      },
+        "sockopt": {
+          "mark": 255
+                    }
+                        },
+	   "mux": {
+        "enabled": true
+                 }
+    },
+   // Scocks
+//         {
+  //          "tag": "proxy2",
+    //        "protocol": "socks",
+      //     "settings": {
+        //       "server": [
+          //         {
+            //            "address": "@@@@-server-@@@@",
+                      
+              //          "port": 10006,
+                //        "users": [
+                  //         {
+                    //            "user": "@@@@@-User-@@@@@",
+                      //          "pass": "@@@@@-Passwd-@@@@@",
+                        //            "level": 0
+//
+    //                        }
+  //                               ]
+      //              }
+        //                 ]
+          //             },
+       //     "streamSettings": {
+         //       "network": "tcp",
+           //     "security": "tls",
+         //     "tlsSettings": {
+           //         "serverName": "@@@@-server-@@@@",
+             //       "allowInsecure": false
+             //   },
+            //   "sockopt": {
+              // "mark": 255
+                //        }
+                  //           },
+      //    "mux": {
+        //"enabled": true,
+       // "concurrency": 8
+         //        }
+    //    },
+
+
+{
+   "tag": "proxy3",
+        "protocol": "http",
+        "settings": {
+          "servers": [
+            {
+              "address": "@@@@-server-@@@@",//服务器IP
+              "port": 10004,//服务器端口
+              "users": [
+                {
+                  "Username": "@@@@@-User-@@@@@",//将username改为你的用户名.
+                  "Password": "@@@@@-Passwd-@@@@@" //将password改为你的密码
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+            "network": "tcp",
+          "security": "tls" //如果是HTTPS代理,需要將none改為tls
+//          "tlsSettings": {
+  //          "allowInsecure": false
+            //检测证书有效性
+    //    }
+      }
+    },
+{
+
+    // VMESS http 代理
+      "tag": "proxy4",
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "@@@@-server-@@@@",
+            "port": 10003,
+            "users": [
+              {
+                "id": "@@@@-uuid-@@@@",
+                "alterId": 131
+              }
+                     ]
+          }
+                 ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+          "tcpSettings": {
+          "header": {  //这里的 header 要与服务器保持一致
+            "type": "http",
+            "request": {
+              "version": "1.1",
+              "method": "GET",
+              "path": ["/"],
+              "headers": {
+                "Host": ["www.cloudflare.com", "www.amazon.com"],
+                "User-Agent": [
+                  "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.75 Safari/537.36",
+                          "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_2 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/53.0.2785.109 Mobile/14A456 Safari/601.1.46"
+                ],
+                "Accept-Encoding": ["gzip, deflate"],
+                "Connection": ["keep-alive"],
+                "Pragma": "no-cache"
+              }
+            }
+          }
+     }
+   }
+//          "proxySettings": {
+  //        "tag": "proxy3"//HTTPS 的前置代理配置，前置代理，通过http代理proxy3转发
+    //    }
+    },
+
+
+
+
+//mKCP 客户端的上行对于服务器来说是下行，同样地客户端的下行是服务器的上行，mKCP 设置当中服务器和客户端都有 uplinkCapacity 和 downlinkCapacity，所以客户端的上传速率由服务器的 downlinkCapacity 和客户端的 uplinkCapacity 中的最小值决定，客户端的下载速率也是同样的道理。因此，建议将服务器和客户端的 downlinkCapacity 设成一个很大的值，然后分别修改两端的 uplinkCapacity 以调整上下行速率
+//有一个 header 参数可以对 mKCP 进行伪装，这是 mKCP 的一个优势。具体的伪装类型在 type 参数设置，type 可以设置成 utp、srtp、wechat-video、dtls、wireguard 或者 none，这几个分别将 mKCP 数据伪装成 BT 下载、视频通话、微信视频通话、dtls、wireguard(一种新型 VPN)以及不进行伪装。这里的 type 参数，客户端与服务器要一致。还有要时刻记住伪装仅仅是伪装
+ {     "tag": "proxy5",
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "@@@@-server-@@@@",
+            "port": 10002,
+            "users": [
+              {
+                "id": "@@@@-uuid-@@@@",
+                "alterId": 132
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "mkcp",
+        "kcpSettings": {
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 100,
+          "congestion": true,
+          "header": {
+            "type": "none"
+          }
+        }
+      }
+    },
+
+ {
+ "tag": "proxyA",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "@@@@-server-@@@@",
+            "port": 10007,
+            "users": [
+              {
+                "id": "@@@@-uuid-@@@@",
+                "alterId": 129,
+                "encryption":"none"
+                   }
+                     ]
+          }
+        ]
+                  },
+      "streamSettings": {
+        "network": "h2",
+        "httpSettings": { //此项是关于 HTTP/2 的设置
+          "path": "/ddaabbcc/"
+        },
+        "security": "tls",
+        "sockopt": {
+          "mark": 255
+                    }
+                        },
+           "mux": {
+        "enabled": true
+                 }
+
+
+    },
+  
+ {
+         "tag": "proxy8",
+            "protocol": "vless",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "@@@@-server-@@@@", // 换成你的域名或服务器 IP（发起请求时无需解析域名了）
+                        "port": 10008,
+                        "users": [
+                            {
+                                "id": "@@@@-uuid-@@@@", // 填写你的 UUID
+                                "encryption": "none",
+                                "level": 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "tls",
+                "tlsSettings": {
+                    "serverName": "@@@@-server-@@@@" // 换成你的域名
+                }
+            }
+        },
+
+    {
+   // Shadowsocks
+      "tag": "proxy10",
+
+      "protocol": "shadowsocks",
+      "settings": {
+     "servers": [
+       {
+           "address": "@@@@-server-@@@@", // Shadowsocks 的服务器地址
+            "method": "aes-128-gcm", // Shadowsocks 的加密方式
+            "AEAD": true, // 是否开启 OTA，true 为开启
+            "password": "@@@@@-Passwd-@@@@@", // Shadowsocks 的密码
+            "port": 10005
+       }
+                   ]
+                  }
+    },
+{
+//如果要使用路由，这个 tag 是一定要有的，在这里 direct 就是 freedom 的一个标号，在路由中说 direct V2Ray 就知道是这里的 freedom 了
+	 "tag": "direct",
+     "protocol": "freedom",
+     "settings": {
+     "domainStrategy": "UseIP"
+                 },
+      "streamSettings": {
+      "sockopt": {
+      "mark": 255
+                 }
+	                    }
+    },
+    {
+//在路由中说 adblock 就知道是这里的 blackhole（黑洞） 了
+      "tag": "adblock",
+	  "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+                    }
+                  }
+    },
+  
+  {
+//DNS
+      "tag": "dns-out",
+      "protocol": "dns",
+//这一段注释掉，直接在rules里面实现
+ //"proxySettings": {
+   //             "tag": "proxy1" //V2ray 将会直连转发至VPS 服务器
+     //       },
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+                   }
+                        }
+
+   }
+],
+
+"dns": {
+ "hosts": {
+  
+//    "www.google.com": "172.217.11.164",
+  //  "youtube.com": "142.250.68.46",
+  //  "github.com": "192.30.255.113"
+ //   "raw.githubusercontent.com": "151.101.192.133"
+//     "geosite:category-ads": "127.0.0.1"
+
+
+  },
+   "servers": [
+//  "8.8.8.8",
+  //"223.5.5.5",
+     "1.1.1.1",
+     "114.114.114.114",
+     "114.114.115.115",
+    {
+      //中国大陆域名使用阿里的 DNS
+        "address": "223.5.5.5",
+        "port": 53,
+        "domains":[
+          "geosite:cn",
+          "ntp.org"   // NTP 服务器
+         // "$myserver.address" // 此处改为你 VPS 的域名
+                   ],
+         "expectIPs":[
+         "geoip:cn"
+                    ]
+      },
+    {
+       "address": "8.8.8.8",
+       "port": 53,
+       "domains": [
+         "geosite:geolocation-!cn",
+         "geosite:speedtest"
+                  ]
+     },
+"https://1.1.1.1/dns-query",
+"https://223.5.5.5/dns-query",
+"https://dns.alidns.com/dns-query",
+"https://dns.rubyfish.cn/dns-query",
+"https://doh.securedns.eu/dns-query",
+"https://doh-de.blahdns.com/dns-query",
+"https://ibksturm.synology.me/dns-query",
+    "localhost"
+                  ]
+ },
+
+ "routing": {
+    "domainStrategy": "IPOnDemand",
+
+"rules": [
+    
+{ // 劫持 53 端口 UDP 流量，使用 V2Ray 的 DNS
+        "type": "field",
+        "inboundTag": [
+          "transparent"
+                      ],
+        "port": 53,
+        "network": "udp",
+        "outboundTag": "dns-out"
+      },
+	  { // 直连 123 端口 UDP 流量（NTP 协议）
+        "type": "field",
+        "inboundTag": [
+          "transparent"
+                      ],
+        "port": 123,
+        "network": "udp",
+        "outboundTag": "direct"
+       },
+  { // 设置代理Vmess
+        "type": "field",
+        "ip": [
+          // 设置 DNS 配置中的国 服务器地址走代理，以达到 DNS 分流目的
+          "8.8.8.8",
+          "1.1.1.1",
+ // 设置常用外网IP走代理，以达到分流作用
+         "172.217.0.0/16",
+          "91.108.8.0/22",
+          "91.108.12.0/22",
+          "91.108.20.0/22",
+          "91.108.36.0/23",
+          "91.108.38.0/23",
+          "91.108.56.0/22",
+          "149.154.160.0/20",
+          "149.154.164.0/22",
+          "149.154.172.0/22",
+          "74.125.0.0/16",
+          "173.194.0.0/16",
+          "216.58.200.0/24",
+          "216.58.220.0/24",
+          "91.108.56.116",
+          "91.108.56.0/24",
+          "109.239.140.0/24",
+          "149.154.167.0/24",
+          "149.154.175.0/24",
+          "176.32.98.166",
+          "192.30.255.113",
+          "151.101.192.133",
+           "151.101.64.133"
+
+              ],
+        "outboundTag": "proxy@@@@-A-@@@@" // 改为你自己代理的出站 tag
+      },
+	  
+{ // 设置 DNS 配置中的国内 DNS 服务器地址直连，以达到 DNS 分流目的
+        "type": "field",
+       "ip": [
+          "223.5.5.5",
+          "114.114.114.114",
+          "114.114.115.115"
+              ],
+        "outboundTag": "direct"
+      },
+
+ {  // 广告拦截https://github.com/ToutyRater/V2Ray-SiteDAT/blob/master/geofiles/h2y.dat
+        "domain": [
+          "domain:tanx.com",
+          "domain:twitter.com",
+          "googeadsserving.cn",
+          "geosite:category-ads-all"
+//        "ext:h2y.dat:ad"
+                  ],
+        "type": "field",
+        "outboundTag": "adblock"
+      },
+	  { // BT 流量直连
+        "type": "field",
+        "protocol":["bittorrent"],
+        "outboundTag": "direct"
+      },
+
+
+ {
+//特殊网站proxy
+        "domain": [
+         "domain:facebook.com",
+         "domain:youtu.be",
+         "domain:google.com",
+          "domain:youtube.com",
+          "domain:netflix.com",
+          "geosite:google",
+          "geosite:github",
+          "geosite:netflix",
+          "geosite:steam",
+          "geosite:telegram",
+          "geosite:tumblr",
+          "geosite:speedtest",
+          "geosite:bbc",
+          "domain:gvt1.com",
+          "domain:textnow.com",
+          "domain:twitch.tv",
+          "domain:wikileaks.org",
+          "domain:naver.com"        
+
+  //          "domain:raw.githubusercontent.com"
+                  ],
+        "type": "field",
+        "outboundTag": "proxy@@@@-A-@@@@"
+      },
+
+
+ {
+//特殊网站直连
+        "domain": [
+       "domain:amazonaws.com",
+        "domain:thermo.com",
+        "domain:xiaohongshu.com",
+        "domain:icloud.com",
+        "domain:sharepoint.com",
+         "domain:ampple.com",
+         "domain:thermo.com",
+         "domain:amazon.com",
+          "domain:microsoft.com",
+          "domain:jd.com",
+          "domain:youku.com",
+          "domain:iqyi.com",
+           "domain:qq.com",
+          "domain:tencent.com",
+          "domain:tencentcloud.com",
+          "domain:bing.com",
+          "domain:dell.com",
+          "domain:emerson.com",
+          "domain:thermofisher.com",
+          "domain:icbc.com",
+          "domain:taobao.com",
+          "domain:tmall.com",
+          "domain:baidu.com",
+          "domain:akadns.net",
+          "domain:apache.org",
+           "domain:paypal.com",
+          "domain:windowsupdate.com",
+          "domain:12306.com",
+         "domain:appstore.com",
+         "domain:douyutv.com",
+         "domain:eclipse.org",
+          "domain:weather.com",
+           "domain:xiaomi.net"
+  ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+// 直连中国大陆主流网站域名
+        "type": "field",
+        "outboundTag": "direct",
+        "domain": ["geosite:cn"]
+      },
+ {
+// 直连中国大陆主流网站 ip 和 保留 ip
+        "type": "field",
+        "outboundTag": "direct",
+        "ip": [
+          "geoip:cn",
+          "geoip:private"
+              ]
+      }
+        ]
+}
+}
