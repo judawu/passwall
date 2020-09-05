@@ -235,11 +235,15 @@
                 ],
                 "decryption": "none",
                 "fallback": {
-                    "unix": "/dev/shm/default.sock",
+                  //  "unix": "/dev/shm/default.sock",
+				  "addr": "127.0.0.1",
+                    "port": 8001,
                     "xver": 1
                 },
                 "fallback_h2": {
-                    "unix": "/dev/shm/h2.sock",
+                   // "unix": "/dev/shm/h2.sock",
+				   "addr": "127.0.0.1",
+                    "port": 8002,
                     "xver": 1
                 }
             },

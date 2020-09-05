@@ -555,10 +555,146 @@ ssr_go() {
     
 }
 trojan_go() {
- echo -e "\n$green 不好意思，TROJAN我还没有写部署步骤...$none\n"
+ echo -e "\n$green 不好意思，TROJAN只有安装...$none\n"
  sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/trojan-gfw/trojan-quickstart/master/trojan-quickstart.sh)"
- 
+# systemctl  start/stop/status trojan.service
+# 配置/usr/local/etc/trojan/config.json， /usr/local/bin/trojan，我默认开启了客户端开启config.json的端口10010， 然后在v2ray客户端里面通过outbounds socks调用trojan 来实现分流
+echo -e "\n$green 配置/usr/local/etc/trojan/config.json...$none\n"
+echo -e "\n$green 在v2ray客户端里面通过outbounds socks调用trojan 来实现分流...$none\n"
 }
+
+wireguard_go() {
+ echo -e "\n$green 不好意思，安装wireguard，并配置V2ray客户端将流量转发给wireguard...$none\n"
+ sudo apt install wireguard
+ 
+#echo "deb http://deb.debian.org/debian buster-backports main" >/etc/apt/sources.list.d/backports.list
+#apt-get update
+cd /etc/wireguard/
+umask 077
+#wg genkey > private
+wg genkey | tee sprivatekey | wg pubkey > spublickey
+wg genkey | tee cprivatekey | wg pubkey > cpublickey
+
+
+while true
+	do  echo -e "\n$green ，配置文件在/etc/wireguard/wg0.conf...$none\n"		 
+		read -p "(请输入Server/Client [s/c]): " sc
+		if [ -n "$sc" ]; then
+			case "$(first_character "$sc")" in
+				s|S)
+# 井号开头的是注释说明，用该命令执行后会自动过滤注释文字。
+# 下面加粗的这一大段都是一个代码！请把下面几行全部复制，然后粘贴到 SSH软件中执行，不要一行一行执行！
+ 
+echo "[Interface]
+# 服务器的私匙，对应客户端配置中的公匙（自动读取上面刚刚生成的密匙内容）
+PrivateKey = $(cat sprivatekey)
+# 本机的内网IP地址，一般默认即可，除非和你服务器或客户端设备本地网段冲突
+Address = 192.168.121.1/24
+# 运行 WireGuard 时要执行的 iptables 防火墙规则，用于打开NAT转发之类的。因为我们是v2ray转发，这里不配置
+# 如果你的服务器主网卡名称不是 eth0 ，那么请修改下面防火墙规则中最后的 eth0 为你的主网卡名称。
+#PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+# 停止 WireGuard 时要执行的 iptables 防火墙规则，用于关闭NAT转发之类的。因为我们是v2ray转发，这里不配置
+# 如果你的服务器主网卡名称不是 eth0 ，那么请修改下面防火墙规则中最后的 eth0 为你的主网卡名称。
+#PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+# 服务端监听端口，可以自行修改
+ListenPort = 10020 
+#设置服务器的监听端口，注意v2ray 需要通过socks来转发到这里
+# 服务端请求域名解析 DNS
+   DNS = 8.8.8.8
+# 保持默认
+   MTU = 1420
+[Peer]
+# 代表客户端配置，每增加一段 [Peer] 就是增加一个客户端账号
+# 该客户端账号的公匙，对应客户端配置中的私匙（自动读取上面刚刚生成的密匙内容）
+PublicKey = $(cat cpublickey)
+# 该客户端账号的内网IP地址
+AllowedIPs = 192.168.121.2/24 
+Endpoint = 192.168.121.2:10021
+"|sed '/^#/d;/^\s*$/d' > wg0.conf
+ 	
+					;;	
+
+				c|C)
+echo "[Interface]
+# 客户端的私匙，对应服务器配置中的客户端公匙（自动读取上面刚刚生成的密匙内容）
+PrivateKey = $(cat cprivatekey)
+# 客户端的内网IP地址
+Address = 192.168.121.2/24
+ListenPort = 10021 设置客户端的监听端口，注意v2ray 需要通过socks来转发到这里
+# 解析域名用的DNS
+DNS = 8.8.8.8
+# 保持默认
+MTU = 1420
+[Peer]
+# 服务器的公匙，对应服务器的私匙（自动读取上面刚刚生成的密匙内容）
+PublicKey = $(cat spublickey)
+# 服务器地址和端口，下面的 X.X.X.X 记得更换为你的服务器公网IP，端口请填写服务端配置时的监听端口
+Endpoint = 192.168.121.1:10020
+# 因为是客户端，这里要注意只接受通过本机的端口10021转发过来的数据吧
+#AllowedIPs = 0.0.0.0/0, ::0/0
+AllowedIPs = 192.168.121.1/24
+# 保持连接，如果客户端或服务端是 NAT 网络(比如国内大多数家庭宽带没有公网IP，都是NAT)，那么就需要添加这个参数定时链接服务端(单位：秒)，如果你的服务器和你本地都不是 NAT 网络，那么建议不使用该参数（设置为0，或客户端配置文件中删除这行）
+PersistentKeepalive = 25"|sed '/^#/d;/^\s*$/d' > client.conf					
+					;;	
+				*)					
+					break
+					;;
+			esac
+		fi
+	break
+done
+#sudo wg-quick up /etc/wireguard/wg0.conf
+# ip link add wg0 type wireguard
+# wg setconf wg0 /dev/fd/63
+# ip -4 address add 192.168.121.2/24 dev wg0
+# ip link set mtu 1420 up dev wg0
+# resolvconf -a wg0 -m 0 -x
+# ip link delete dev wg0
+
+#ip link add dev wg0 type wireguard
+#ip address add  192.168.121.102/24 dev wg0
+#wg set wg0 private-key ./private
+#ip addr
+#wg-quick up wg0
+# 执行命令后，输出示例如下（仅供参考）
+ 
+ ip link add wg0 type wireguard
+ wg setconf wg0 /etc/wireguard/wg0.conf
+ip address add 192.168.121.2/24 dev wg0
+
+ ip link set mtu 1420 dev wg0
+ ip link set wg0 up
+ 
+ lsmod | grep wireguard
+#首先，检查下 ip 转发是否已开启：
+sysctl net.ipv4.ip_forward
+#如果等于 1 说明已经开启，否则可以使用：
+#sysctl net.ipv4.ip_forward=1
+#来临时开启，如果想永久生效，需要编辑 /etc/sysctl.conf 文件，查找到 net.ipv4.ip_forward 这一行，把最前端的 # #号（注释）去掉，如果其值不为 1 的，改成 1。如果找不到，就把 net.ipv4.ip_forward=1 加在文件最下面。
+#然后使用命令 sysctl -p 来使其生效。
+#接下来检查下 iptables 里 filter 表的 FORWARD 链的 policy 是否为 ACCEPT：
+iptables -t filter -L FORWARD
+#如果 policy 为 DROP，需要允许 wg0 接口才行：
+iptables -t filter -A FORWARD -i wg0 -j ACCEPT
+iptables -t filter -A FORWARD -o wg0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+#然后看下 nat 表的 POSTROUTING 链里是否已经做了出口的 NAT 了（这里假设服务器上连接外网的接口是 eth0）：
+iptables -t nat -L POSTROUTING -v
+#如果还没有，使用以下命令加上：
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+#PS：如果出口不是 eth0 接口的，把 eth0 换成正真的出口接口
+
+#在服务器设置好后，还要在本地加上路由，把流量转发到 wg0 接口上。
+
+#本地路由
+#ip route add <endpoint>/32 via <出口接口的网关IP> dev <出口接口>
+#ip route add default via 192.168.128.1 dev wg0 src 192.168.128.254
+#配置好后，可以在本地 ping 下 8.8.8.8，如果 ping 的通，并且 tracepath 8.8.8.8 的路由里有 192.168.128.1，说明已经通了
+ 
+# 如果此处没有报错：RTNETLINK answers: Operation not supported，且输入内容差不多，那么说明启动成功了！
+
+
+}
+
 ngnix_go() {
 
 if  [[ -f /etc/nginx/sites-available ]]; then
@@ -763,6 +899,7 @@ while :; do
 	echo " 11. 安装和部署kcprun"
 	echo " 12. 更新V2ray"
 	echo " 13. 更新V2ray配置文件为Full"
+	echo " 14. 安装wireguard"
 	echo
 	read -p "请选择[1-10]:" choose
 	case $choose in
@@ -810,12 +947,16 @@ while :; do
 		kcprun_go
 		break
 		;;
-	11)
+	12)
 		UpdateV2ray_go
 		break
 		;;
-	11)
+	13)
 		UpdateV2rayConfig_go
+		break
+		;;
+	14)
+		wireguard_go
 		break
 		;;
 	*)

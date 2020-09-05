@@ -99,42 +99,40 @@
                  }
     },
    // Scocks
-//         {
-  //          "tag": "proxy2",
-    //        "protocol": "socks",
-      //     "settings": {
-        //       "server": [
-          //         {
-            //            "address": "@@@@-server-@@@@",
-                      
-              //          "port": 10006,
-                //        "users": [
-                  //         {
-                    //            "user": "@@@@@-User-@@@@@",
-                      //          "pass": "@@@@@-Passwd-@@@@@",
-                        //            "level": 0
-//
-    //                        }
-  //                               ]
-      //              }
-        //                 ]
-          //             },
-       //     "streamSettings": {
-         //       "network": "tcp",
-           //     "security": "tls",
-         //     "tlsSettings": {
-           //         "serverName": "@@@@-server-@@@@",
-             //       "allowInsecure": false
-             //   },
-            //   "sockopt": {
-              // "mark": 255
-                //        }
-                  //           },
-      //    "mux": {
-        //"enabled": true,
-       // "concurrency": 8
-         //        }
-    //    },
+        {
+          "tag": "proxy2",
+        "protocol": "socks",
+       "settings": {
+            "servers": [
+                 {
+            "address": "@@@@-server-@@@@",
+                       "port": 10006,
+                       "users": [
+                          {
+                               "user": "@@@@@-User-@@@@@",
+                               "pass": "@@@@@-Passwd-@@@@@",
+                               "level": 0
+                          }
+                               ]
+                }
+                        ]
+                      },
+           "streamSettings": {
+               "network": "tcp",
+               "security": "tls",
+              "tlsSettings": {
+                    "serverName": "@@@@-server-@@@@",
+                    "allowInsecure": false
+                },
+              "sockopt": {
+               "mark": 255
+                       }
+                           },
+          "mux": {
+        "enabled": true,
+        "concurrency": 8
+                 }
+      },
 
 
 {
@@ -336,6 +334,27 @@
                  }
 	                    }
     },
+	
+	
+{
+//这里需要填写tojan客户端的端口号
+
+         "tag": "trojan",
+//"sendThrough": "0.0.0.0",
+    "protocol": "socks",
+    "settings": {
+           "servers": [
+           {
+           "address": "127.0.0.1",
+            "port": 10010
+          }
+                     ]
+                 }
+
+
+    },
+
+	
     {
 //在路由中说 adblock 就知道是这里的 blackhole（黑洞） 了
       "tag": "adblock",
@@ -525,6 +544,21 @@
                   ],
         "type": "field",
         "outboundTag": "proxy@@@@-A-@@@@"
+      },
+
+ {
+//特殊网站proxy-toojan
+
+   "domain": [
+         "domain:facebook.com"
+//         "domain:baidu.com"
+
+  ],
+
+
+
+        "type": "field",
+        "outboundTag": "trojan"
       },
 
 

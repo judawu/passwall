@@ -7,7 +7,8 @@
 
 
  server {
-        listen       unix:/dev/shm/default.sock proxy_protocol;
+     #   listen       unix:/dev/shm/default.sock proxy_protocol;
+	   listen 127.0.0.1:8001 proxy_protocol;
         server_name  @@@@-server-@@@@;
         root         /usr/share/nginx/html;
 
@@ -29,7 +30,8 @@
     }
 
     server {
-        listen       unix:/dev/shm/h2.sock http2 proxy_protocol;
+      #  listen       unix:/dev/shm/h2.sock http2 proxy_protocol;
+	      listen 127.0.0.1:8002 http2 proxy_protocol;
         server_name  @@@@-server-@@@@;
         root         /usr/share/nginx/html;
 
